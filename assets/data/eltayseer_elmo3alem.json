@@ -1,0 +1,402 @@
+[
+    {
+        "id":1,
+        "sura":1,
+        "aya":1,
+        "sura_name":"الفاتحة" , 
+        "url":"http://sound.quraat.info/AddonS/Osool/S001A001M.mp3",
+        "file":5
+    },
+    {
+        "id":2,
+        "sura":1,
+        "aya":2,
+        "sura_name":"الفاتحة" , 
+        "url":"http://sound.quraat.info/AddonS/Osool/S001A002M.mp3",
+        "file":5
+    },
+    {
+        "id":3,
+        "sura":1,
+        "aya":3,
+        "sura_name":"الفاتحة" , 
+        "url":"http://sound.quraat.info/AddonS/Osool/S001A003M.mp3",
+        "file":5
+    },
+    {
+        "id":4,
+        "sura":1,
+        "aya":4,
+        "sura_name":"الفاتحة" , 
+        "url":"http://sound.quraat.info/AddonS/Osool/S001A004M.mp3",
+        "file":5
+    },
+    {
+        "id":5,
+        "sura":1,
+        "aya":5,
+        "sura_name":"الفاتحة" , 
+        "url":"http://sound.quraat.info/AddonS/Osool/S001A005M.mp3",
+        "file":5
+    },
+    {
+        "id":6,
+        "sura":1,
+        "aya":6,
+        "sura_name":"الفاتحة" , 
+        "url":"http://sound.quraat.info/AddonS/Osool/S001A006M.mp3",
+        "file":5
+    },
+    {
+        "id":7,
+        "sura":1,
+        "aya":7,
+        "sura_name":"الفاتحة" , 
+        "url":"http://sound.quraat.info/AddonS/Osool/S001A007M.mp3",
+        "file":5
+    },
+    {
+        "id":8,
+        "sura":2,
+        "aya":1,
+        "sura_name":"البقرة" , 
+        "url":"http://sound.quraat.info/AddonS/Osool/S002A001M.mp3",
+        "file":5
+    },
+    {
+        "id":9,
+        "sura":2,
+        "aya":2,
+        "sura_name":"البقرة" , 
+        "url":"http://sound.quraat.info/AddonS/Osool/S002A002M.mp3",
+        "file":5
+    },
+    {
+        "id":10,
+        "sura":2,
+        "aya":3,
+        "sura_name":"البقرة" , 
+        "url":"http://sound.quraat.info/AddonS/Osool/S002A003M.mp3",
+        "file":5
+    },
+    {
+        "id":11,
+        "sura":2,
+        "aya":4,
+        "sura_name":"البقرة" , 
+        "url":"http://sound.quraat.info/AddonS/Osool/S002A004M.mp3",
+        "file":5
+    },
+    {
+        "id":12,
+        "sura":2,
+        "aya":5,
+        "sura_name":"البقرة" , 
+        "url":"http://sound.quraat.info/AddonS/Osool/S002A005M.mp3",
+        "file":5
+    },
+    {
+        "id":13,
+        "sura":2,
+        "aya":6,
+        "sura_name":"البقرة" , 
+        "url":"http://sound.quraat.info/AddonS/Osool/S002A006M.mp3",
+        "file":5
+    },
+    {
+        "id":14,
+        "sura":2,
+        "aya":7,
+        "sura_name":"البقرة" , 
+        "url":"http://sound.quraat.info/AddonS/Osool/S002A007M.mp3",
+        "file":5
+    },
+    {
+        "id":15,
+        "sura":2,
+        "aya":8,
+        "sura_name":"البقرة" , 
+        "url":"http://sound.quraat.info/AddonS/Osool/S002A008M.mp3",
+        "file":5
+    },
+    {
+        "id":16,
+        "sura":2,
+        "aya":9,
+        "sura_name":"البقرة" , 
+        "url":"http://sound.quraat.info/AddonS/Osool/S002A009M.mp3",
+        "file":5
+    },
+    {
+        "id":17,
+        "sura":2,
+        "aya":10,
+        "sura_name":"البقرة" , 
+        "url":"http://sound.quraat.info/AddonS/Osool/S002A010M.mp3",
+        "file":5
+    },
+    {
+        "id":18,
+        "sura":2,
+        "aya":11,
+        "sura_name":"البقرة" , 
+        "url":"http://sound.quraat.info/AddonS/Osool/S002A011M.mp3",
+        "file":5
+    },
+    {
+        "id":19,
+        "sura":2,
+        "aya":12,
+        "sura_name":"البقرة" , 
+        "url":"http://sound.quraat.info/AddonS/Osool/S002A012M.mp3",
+        "file":5
+    },
+    {
+        "id":20,
+        "sura":2,
+        "aya":13,
+        "sura_name":"البقرة" , 
+        "url":"http://sound.quraat.info/AddonS/Osool/S002A013M.mp3",
+        "file":5
+    },
+    {
+        "id":21,
+        "sura":2,
+        "aya":14,
+        "sura_name":"البقرة" , 
+        "url":"http://sound.quraat.info/AddonS/Osool/S002A014M.mp3",
+        "file":5
+    },
+    {
+        "id":22,
+        "sura":2,
+        "aya":15,
+        "sura_name":"البقرة" , 
+        "url":"http://sound.quraat.info/AddonS/Osool/S002A015M.mp3",
+        "file":5
+    },
+    {
+        "id":23,
+        "sura":2,
+        "aya":16,
+        "sura_name":"البقرة" , 
+        "url":"http://sound.quraat.info/AddonS/Osool/S002A016M.mp3",
+        "file":5
+    },
+    {
+        "id":24,
+        "sura":2,
+        "aya":17,
+        "sura_name":"البقرة" , 
+        "url":"http://sound.quraat.info/AddonS/Osool/S002A017M.mp3",
+        "file":5
+    },
+    {
+        "id":25,
+        "sura":2,
+        "aya":18,
+        "sura_name":"البقرة" , 
+        "url":"http://sound.quraat.info/AddonS/Osool/S002A018M.mp3",
+        "file":5
+    },
+    {
+        "id":26,
+        "sura":2,
+        "aya":19,
+        "sura_name":"البقرة" , 
+        "url":"http://sound.quraat.info/AddonS/Osool/S002A019M.mp3",
+        "file":5
+    },
+    {
+        "id":27,
+        "sura":2,
+        "aya":20,
+        "sura_name":"البقرة" , 
+        "url":"http://sound.quraat.info/AddonS/Osool/S002A020M.mp3",
+        "file":5
+    },
+    {
+        "id":28,
+        "sura":2,
+        "aya":21,
+        "sura_name":"البقرة" , 
+        "url":"http://sound.quraat.info/AddonS/Osool/S002A021M.mp3",
+        "file":5
+    },
+    {
+        "id":29,
+        "sura":2,
+        "aya":22,
+        "sura_name":"البقرة" , 
+        "url":"http://sound.quraat.info/AddonS/Osool/S002A022M.mp3",
+        "file":5
+    },
+    {
+        "id":30,
+        "sura":2,
+        "aya":23,
+        "sura_name":"البقرة" , 
+        "url":"http://sound.quraat.info/AddonS/Osool/S002A023M.mp3",
+        "file":5
+    },
+    {
+        "id":31,
+        "sura":2,
+        "aya":24,
+        "sura_name":"البقرة" , 
+        "url":"http://sound.quraat.info/AddonS/Osool/S002A024M.mp3",
+        "file":5
+    },
+    {
+        "id":32,
+        "sura":2,
+        "aya":25,
+        "sura_name":"البقرة" , 
+        "url":"http://sound.quraat.info/AddonS/Osool/S002A025M.mp3",
+        "file":5
+    },
+    {
+        "id":33,
+        "sura":2,
+        "aya":26,
+        "sura_name":"البقرة" , 
+        "url":"http://sound.quraat.info/AddonS/Osool/S002A026M.mp3",
+        "file":5
+    },
+    {
+        "id":34,
+        "sura":2,
+        "aya":27,
+        "sura_name":"البقرة" , 
+        "url":"http://sound.quraat.info/AddonS/Osool/S002A027M.mp3",
+        "file":5
+    },
+    {
+        "id":35,
+        "sura":2,
+        "aya":28,
+        "sura_name":"البقرة" , 
+        "url":"http://sound.quraat.info/AddonS/Osool/S002A028M.mp3",
+        "file":5
+    },
+    {
+        "id":36,
+        "sura":2,
+        "aya":29,
+        "sura_name":"البقرة" , 
+        "url":"http://sound.quraat.info/AddonS/Osool/S002A029M.mp3",
+        "file":5
+    },
+    {
+        "id":37,
+        "sura":2,
+        "aya":30,
+        "sura_name":"البقرة" , 
+        "url":"http://sound.quraat.info/AddonS/Osool/S002A030M.mp3",
+        "file":5
+    },
+    {
+        "id":38,
+        "sura":2,
+        "aya":31,
+        "sura_name":"البقرة" , 
+        "url":"http://sound.quraat.info/AddonS/Osool/S002A031M.mp3",
+        "file":5
+    },
+    {
+        "id":39,
+        "sura":2,
+        "aya":32,
+        "sura_name":"البقرة" , 
+        "url":"http://sound.quraat.info/AddonS/Osool/S002A032M.mp3",
+        "file":5
+    },
+    {
+        "id":40,
+        "sura":2,
+        "aya":33,
+        "sura_name":"البقرة" , 
+        "url":"http://sound.quraat.info/AddonS/Osool/S002A033M.mp3",
+        "file":5
+    },
+    {
+        "id":41,
+        "sura":2,
+        "aya":34,
+        "sura_name":"البقرة" , 
+        "url":"http://sound.quraat.info/AddonS/Osool/S002A034M.mp3",
+        "file":5
+    },
+    {
+        "id":42,
+        "sura":2,
+        "aya":35,
+        "sura_name":"البقرة" , 
+        "url":"http://sound.quraat.info/AddonS/Osool/S002A035M.mp3",
+        "file":5
+    },
+    {
+        "id":43,
+        "sura":2,
+        "aya":36,
+        "sura_name":"البقرة" , 
+        "url":"http://sound.quraat.info/AddonS/Osool/S002A036M.mp3",
+        "file":5
+    },
+    {
+        "id":44,
+        "sura":2,
+        "aya":37,
+        "sura_name":"البقرة" , 
+        "url":"http://sound.quraat.info/AddonS/Osool/S002A037M.mp3",
+        "file":5
+    },
+    {
+        "id":45,
+        "sura":2,
+        "aya":38,
+        "sura_name":"البقرة" , 
+        "url":"http://sound.quraat.info/AddonS/Osool/S002A038M.mp3",
+        "file":5
+    },
+    {
+        "id":46,
+        "sura":2,
+        "aya":39,
+        "sura_name":"البقرة" , 
+        "url":"http://sound.quraat.info/AddonS/Osool/S002A039M.mp3",
+        "file":5
+    },
+    {
+        "id":47,
+        "sura":2,
+        "aya":40,
+        "sura_name":"البقرة" , 
+        "url":"http://sound.quraat.info/AddonS/Osool/S002A040M.mp3",
+        "file":5
+    },
+    {
+        "id":48,
+        "sura":2,
+        "aya":41,
+        "sura_name":"البقرة" , 
+        "url":"http://sound.quraat.info/AddonS/Osool/S002A041M.mp3",
+        "file":5
+    },
+    {
+        "id":49,
+        "sura":2,
+        "aya":42,
+        "sura_name":"البقرة" , 
+        "url":"http://sound.quraat.info/AddonS/Osool/S002A042M.mp3",
+        "file":5
+    },
+    {
+        "id":50,
+        "sura":2,
+        "aya":43,
+        "sura_name":"البقرة" , 
+        "url":"http://sound.quraat.info/AddonS/Osool/S002A043M.mp3",
+        "file":5
+    }
+]

@@ -1,0 +1,25 @@
+﻿khedma=[
+    {"name" : "المعلم وكيفية الجمع-أساتذة", "path" : "learn.quraat.info", "khatmajson" : "Learn"}
+    ,
+    {"name" : "أصول وكيفية جمع-أساتذة", "path" : "osools.quraat.info", "khatmajson" : "OsoolS"}
+    ,
+    {"name" : "الأول تعليمي شاطبية ودرة-أساتذة", "path" : "first.quraat.info", "khatmajson" : "First"}
+    ,
+    {"name" : "تقدمات لآيات-شاطبية ودرة-أساتذة", "path" : "addons.quraat.info", "khatmajson" : "AddonS"}
+    ,
+    {"name" : "الأول تعليمي-شاطبية ودرة-حسن السكندري", "path" : "hjame3.quraat.info", "khatmajson" : "HJame3"}
+    ,
+    {"name" : "زيادات الطيبة-أساتذة", "path" : "osoolk.quraat.info", "khatmajson" : "OsoolK"}
+    ,
+    {"name" : "الأول تعليمي آيات-الطيبة-حمادة خطاب", "path" : "firstk.quraat.info", "khatmajson" : "FirstK"}
+    ,
+    {"name" : "الأول تعليمي أرباع-الطيبة-حمادة خطاب", "path" : "tb.quraat.info", "khatmajson" : "tb"}
+    ,
+    {"name" : "تقدمات لآيات-الطيبة-أساتذة", "path" : "addonk.quraat.info", "khatmajson" : "AddonK"}
+    ,
+    {"name" : "اختبارات بالقراءات-حمادة خطاب", "path" : "queez.quraat.info", "khatmajson" : "queez"}
+    ,
+    {"name" : "تلاوات ومتون ومحاضرات-أحمدخطاب", "path" : "akhattab.quraat.info", "khatmajson" : "akhattab"}
+    ,
+    {"name" : "شروح متون-حمادة خطاب", "path" : "hkhattab.quraat.info", "khatmajson" : "hkhattab"}
+    ]

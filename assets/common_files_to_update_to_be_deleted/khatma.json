@@ -1,0 +1,19 @@
+﻿khatma=[
+    {"name" : "الميسرة الكبرى-مجموعة قراء", "path" : "mk.quraat.info", "khatmajson" : "mk","hasDB" :"1","prief_name":"ك"}
+    ,
+    {"name" : "الميسرة الصغرى-مجموعة قراء", "path" : "ms.quraat.info", "khatmajson" : "ms","hasDB" :"1" ,"prief_name":"ص"}
+    ,
+    {"name" : "سرد الكبرى-هاني بركات", "path" : "hany.quraat.info", "khatmajson" : "hany","hasDB" :"0","prief_name":""}
+    ,
+    {"name" : "سرد الكبرى-عدين رحمن", "path" : "adeen.quraat.info", "khatmajson" : "adeen","hasDB" :"0","prief_name":""}
+    ,
+    {"name" : "بيان الصغرى-صالح عبدالمقصود", "path" : "saleh.quraat.info", "khatmajson" : "saleh","hasDB" :"0","prief_name":""}
+    ,
+    {"name" : "أصحاب الصلة-هاني بركات", "path" : "selah.quraat.info", "khatmajson" : "selah","hasDB" :"0","prief_name":""}
+    ,
+    {"name" : "أصحاب الدرة-مجموعة قراء", "path" : "dorra.quraat.info", "khatmajson" : "dorra","hasDB" :"1","prief_name":"د"}
+    ,
+    {"name" : "أوجه ورش-مجموعة قراء", "path" : "warsh.quraat.info", "khatmajson" : "warsh","hasDB" :"1","prief_name":"و"}
+    ,
+    {"name" : "أوجه قالون-مجموعة قراء", "path" : "qalon.quraat.info", "khatmajson" : "qalon","hasDB" :"0","prief_name":"ق"}
+    ]

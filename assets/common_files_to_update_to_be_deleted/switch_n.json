@@ -1,0 +1,29 @@
+﻿alkobra=[
+    {"shikh" : "أحمد طلبة", "khatma" : "رواية حفص", "folder" : "ATolbaHfs", "text" : "المصحف كاملا","tosura" : "114" , "toaya" : "006", "Type" : 0,"active_sound" : 1, "url":"http://sound.quraat.info/" ,"file_name_format":"tayseer" }
+    ,
+    { "shikh" : "عبدالحكيم عبداللطيف", "khatma" : "رواية شعبة", "folder" : "AbdulHakim", "text" : "المصحف كاملا", "tosura" : "114" , "toaya" : "006", "Type" : 0 , "active_sound" : 1 , "url":"http://sound.quraat.info/" ,"file_name_format":"tayseer" }
+    ,
+    { "shikh" : "طه الفهد", "khatma" : "الصغرى جمعا", "folder" : "Taha", "text" : "المصحف كاملا", "tosura" : "114" , "toaya" : "006", "Type" : 0 , "active_sound" : 1 , "url":"http://sound.quraat.info/" ,"file_name_format":"tayseer" }
+    ,
+    { "shikh" : "هاني بركات", "khatma" : "الكبرى جمعا", "folder" : "Hany", "text" : "المصحف كاملا", "tosura" : "114" , "toaya" : "006", "Type" : 1 , "active_sound" : 1 , "url":"http://sound.quraat.info/" ,"file_name_format":"tayseer" }
+    ,
+    { "shikh" : "أحمد طلبة", "khatma" : "بيان الكبرى بالأدلة", "folder" : "A-Tolba", "text" : "آخرسورة الجاثية", "tosura" : "045" , "toaya" : "037", "Type" : 1 , "active_sound" :1 , "url":"http://sound.quraat.info/" ,"file_name_format":"tayseer" }
+    , 
+    { "shikh" : "صالح عبدالمقصودصالح", "khatma" : "بيان جمع الصغرى", "folder" : "Saleh", "text" : "سورة غافر", "tosura" : "040" , "toaya" : "085", "Type" : 0, "active_sound" : 1 , "url":"http://sound.quraat.info/" ,"file_name_format":"tayseer" }
+    , 
+    { "shikh" : "حمادة خطاب", "khatma" : "تعليمية الكبرى", "folder" : "HamadaK", "text" : "الجزء الأول", "tosura" : "002" , "toaya" : "141", "Type" : 1, "active_sound" : 1, "url":"http://sound.quraat.info/" ,"file_name_format":"tayseer"  }
+    , 
+    { "shikh" : "مجموعة أساتذة", "khatma" : "تعليمية الصغرى", "folder" : "HamadaS", "text" : "الجزء الأول", "tosura" : "002" , "toaya" : "141", "Type" : 0, "active_sound" : 1 , "url":"http://sound.quraat.info/" ,"file_name_format":"tayseer" }
+    ,
+    { "shikh" : "تيسير الدرة", "khatma" : "بيان ثلاث الدرة", "folder" : "Dorra", "text" : "المصحف كاملا", "tosura" : "114" , "toaya" : "006", "Type" : 0 , "active_sound" : 1 , "url":"http://sound.quraat.info/" ,"file_name_format":"tayseer" }
+    , 
+    { "shikh" : "تيسير ورش", "khatma" : "بيان تحريرات الأوجه", "folder" : "Warsh", "text" : "سورة النور", "tosura" : "024" , "toaya" : "064", "Type" : 0 , "active_sound" : 1 , "url":"http://sound.quraat.info/" ,"file_name_format":"tayseer" }
+    , 
+    { "shikh" : "عبدالرحمن الحذيفي", "khatma" : "رواية قالون", "folder" : "HuzaifyQalon", "text" : "المصحف كاملا", "tosura" : "114" , "toaya" : "006", "Type" : 0, "active_sound" : 1 , "url":"http://sound.quraat.info/" ,"file_name_format":"tayseer"  }
+    , 
+    { "shikh" : "ياسين الجزائري", "khatma" : "رواية ورش", "folder" : "YasseenWarsh", "text" : "المصحف كاملا", "tosura" : "114" , "toaya" : "006", "Type" : 0, "active_sound" : 1 , "url":"http://sound.quraat.info/" ,"file_name_format":"tayseer"  }
+    , 
+    { "shikh" : "مفتاح السلطني", "khatma" : "دوري أبي عمرو", "folder" : "MuftahDoriAmr", "text" : "المصحف كاملا", "tosura" : "114" , "toaya" : "006", "Type" : 0, "active_sound" : 1 , "url":"http://sound.quraat.info/" ,"file_name_format":"tayseer" }
+    , 
+    { "shikh" : "عبدالرشيد صوفي", "khatma" : "رواية السوسي", "folder" : "RashidSosi", "text" : "المصحف كاملا", "tosura" : "114" , "toaya" : "006", "Type" : 0, "active_sound" : 1 , "url":"http://sound.quraat.info/" ,"file_name_format":"tayseer" }
+]

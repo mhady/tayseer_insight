@@ -1,0 +1,241 @@
+[
+    {
+        "id": 1,
+        "folder":"Gam3Big",
+        "name":"عن الشاطبية والدرة",
+        "url":"http://sound.quraat.info/AddonS/Osool/AboutShatbiaDora.mp3",
+        "file":1
+    },
+    {
+        "id": 2,
+        "folder":"Gam3Sml",
+        "name":"الجمع مع أمثلة",
+        "url":"http://sound.quraat.info/AddonS/Osool/Gam3Sml.mp3",
+        "file":1
+    },
+    {
+        "id": 3,
+        "folder":"JFathaa",
+        "name":"جمع الفاتحة",
+        "url":"http://sound.quraat.info/AddonS/Osool/JFathaa.mp3",
+        "file":1
+    },
+    {
+        "id": 4,
+        "folder":"JTwoSuras",
+        "name":"وصل السورتين",
+        "url":"http://sound.quraat.info/AddonS/Osool/JTwoSuras.mp3",
+        "file":1
+    },
+    {
+        "id": 5,
+        "folder":"JBaqraa1st",
+        "name":"أول البقرة",
+        "url":"http://sound.quraat.info/AddonS/Osool/JBaqraa1st.mp3",
+        "file":1
+    },
+    {
+        "id": 6,
+        "folder":"Khatmaa",
+        "name":"دعاء الختمة",
+        "url":"http://sound.quraat.info/AddonS/Osool/Khatmaa.mp3",
+        "file":1
+    },
+    {
+        "id": 7,
+        "folder":"Nafe3",
+        "name":"نافع",
+        "url":"http://sound.quraat.info/AddonS/Osool/Nafe3.mp3",
+        "file":1
+    },
+    {
+        "id": 8,
+        "folder":"Qalon",
+        "name":"قالون",
+        "url":"http://sound.quraat.info/AddonS/Osool/Qalon.mp3",
+        "file":1
+    },
+    {
+        "id": 9,
+        "folder":"Warsh",
+        "name":"ورش",
+        "url":"http://sound.quraat.info/AddonS/Osool/Warsh.mp3",
+        "file":1
+    },
+    {
+        "id": 10,
+        "folder":"IbnKathir",
+        "name":"ابن كثير",
+        "url":"http://sound.quraat.info/AddonS/Osool/IbnKathir.mp3",
+        "file":1
+    },
+    {
+        "id": 11,
+        "folder":"ElBazy",
+        "name":"البزي",
+        "url":"http://sound.quraat.info/AddonS/Osool/ElBazy.mp3",
+        "file":1
+    },
+    {
+        "id": 12,
+        "folder":"Konbol",
+        "name":"قنبل",
+        "url":"http://sound.quraat.info/AddonS/Osool/Konbol.mp3",
+        "file":1
+    },
+    {
+        "id": 13,
+        "folder":"AboAmr",
+        "name":"أبو عمرو",
+        "url":"http://sound.quraat.info/AddonS/Osool/AboAmr.mp3",
+        "file":1
+    },
+    {
+        "id": 14,
+        "folder":"DoriAmr",
+        "name":"الدوري",
+        "url":"http://sound.quraat.info/AddonS/Osool/DoriAmr.mp3",
+        "file":1
+    },
+    {
+        "id": 15,
+        "folder":"Sosi",
+        "name":"السوسي",
+        "url":"http://sound.quraat.info/AddonS/Osool/Sosi.mp3",
+        "file":1
+    },
+    {
+        "id": 16,
+        "folder":"Ibn3amer",
+        "name":"ابن عامر",
+        "url":"http://sound.quraat.info/AddonS/Osool/Ibn3amer.mp3",
+        "file":1
+    },
+    {
+        "id": 17,
+        "folder":"Hesham",
+        "name":"هشام",
+        "url":"http://sound.quraat.info/AddonS/Osool/Hesham.mp3",
+        "file":1
+    },
+    {
+        "id": 18,
+        "folder":"IbnZkwan",
+        "name":"ابن ذكوان",
+        "url":"http://sound.quraat.info/AddonS/Osool/IbnZkwan.mp3",
+        "file":1
+    },
+    {
+        "id": 19,
+        "folder":"Asem",
+        "name":"عاصم",
+        "url":"http://sound.quraat.info/AddonS/Osool/Asem.mp3",
+        "file":1
+    },
+    {
+        "id": 20,
+        "folder":"Shoaba",
+        "name":"شعبة",
+        "url":"http://sound.quraat.info/AddonS/Osool/Shoaba.mp3",
+        "file":1
+    },
+    {
+        "id": 21,
+        "folder":"Hafs",
+        "name":"حفص",
+        "url":"http://sound.quraat.info/AddonS/Osool/Hafs.mp3",
+        "file":1
+    },
+    {
+        "id": 22,
+        "folder":"Hamza1",
+        "name":"حمزة ١",
+        "url":"http://sound.quraat.info/AddonS/Osool/Hamza1.mp3",
+        "file":1
+    },
+    {
+        "id": 23,
+        "folder":"Hamza2",
+        "name":"حمزة ٢",
+        "url":"http://sound.quraat.info/AddonS/Osool/Hamza2.mp3",
+        "file":1
+    },
+    {
+        "id": 24,
+        "folder":"Khalaf",
+        "name":"خلف",
+        "url":"http://sound.quraat.info/AddonS/Osool/Khalaf.mp3",
+        "file":1
+    },
+    {
+        "id": 25,
+        "folder":"Khallad",
+        "name":"خلاد",
+        "url":"http://sound.quraat.info/AddonS/Osool/Khallad.mp3",
+        "file":1
+    },
+    {
+        "id": 26,
+        "folder":"Kisa2i",
+        "name":"الكسائي",
+        "url":"http://sound.quraat.info/AddonS/Osool/Kisa2i.mp3",
+        "file":1
+    },
+    {
+        "id": 27,
+        "folder":"AboHares",
+        "name":"أبو الحارث",
+        "url":"http://sound.quraat.info/AddonS/Osool/AboHares.mp3",
+        "file":1
+    },
+    {
+        "id": 28,
+        "folder":"DoriKisa",
+        "name":"الدوري",
+        "url":"http://sound.quraat.info/AddonS/Osool/DoriKisa.mp3",
+        "file":1
+    },
+    {
+        "id": 29,
+        "folder":"AboJa3fr",
+        "name":"أبو جعفر",
+        "url":"http://sound.quraat.info/AddonS/Osool/AboJa3fr.mp3",
+        "file":1
+    },
+    {
+        "id": 30,
+        "folder":"WardanJamaz",
+        "name":"ابن وردان و ابن جماز",
+        "url":"http://sound.quraat.info/AddonS/Osool/WardanJamaz.mp3",
+        "file":1
+    },
+    {
+        "id": 31,
+        "folder":"Ya3qob",
+        "name":"يعقوب",
+        "url":"http://sound.quraat.info/AddonS/Osool/Ya3qob.mp3",
+        "file":1
+    },
+    {
+        "id": 32,
+        "folder":"Royes",
+        "name":"رويس",
+        "url":"http://sound.quraat.info/AddonS/Osool/Royes.mp3",
+        "file":1
+    },
+    {
+        "id": 33,
+        "folder":"Rawh",
+        "name":"روح",
+        "url":"http://sound.quraat.info/AddonS/Osool/Rawh.mp3",
+        "file":1
+    },
+    {
+        "id": 34,
+        "folder":"Khalaf10",
+        "name":"خلف العاشر",
+        "url":"http://sound.quraat.info/AddonS/Osool/Khalaf10.mp3",
+        "file":1
+    }
+    
+]

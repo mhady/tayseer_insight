@@ -1,0 +1,21 @@
+﻿[
+    {"shikh" : "الشيخ أحمد طلبة", "khatma" : "رواية حفص", "folder" : "ATolbaHfs", "text" : "المصحف كاملا","tosura" : "114" , "toaya" : "006", "Type" : 0,"active_sound" : 1}
+    ,
+    { "shikh" : "الشيخ عبدالحكيم عبداللطيف", "khatma" : "رواية شعبة", "folder" : "AbdulHakim", "text" : "المصحف كاملا", "tosura" : "114" , "toaya" : "006", "Type" : 0 , "active_sound" : 1 }
+    ,
+    { "shikh" : "الشيخ طه الفهد", "khatma" : "الصغرى جمعا", "folder" : "Taha", "text" : "المصحف كاملا", "tosura" : "114" , "toaya" : "006", "Type" : 0 , "active_sound" : 1 }
+    ,
+    { "shikh" : "الشيخ هاني بركات", "khatma" : "الكبرى جمعا", "folder" : "Hany", "text" : "المصحف كاملا", "tosura" : "114" , "toaya" : "006", "Type" : 1 , "active_sound" : 1 }
+    ,
+    { "shikh" : "الشيخ أحمد طلبة", "khatma" : "الكبرى بالأوجه مع الأدلة", "folder" : "A-Tolba", "text" : "آخر سبأ", "tosura" : "034" , "toaya" : "054", "Type" : 1 , "active_sound" :1 }
+    , 
+    { "shikh" : "أ. حمادة خطاب", "khatma" : "تعليمية الكبرى", "folder" : "HamadaK", "text" : "الجزء الأول", "tosura" : "002" , "toaya" : "141", "Type" : 1, "active_sound" : 1 }
+    , 
+    { "shikh" : "مجموعة أساتذة", "khatma" : "تعليمية الصغرى", "folder" : "HamadaS", "text" : "الجزء الأول", "tosura" : "002" , "toaya" : "141", "Type" : 0, "active_sound" : 1 }
+    , 
+    { "shikh" : "ياسين الجزائري", "khatma" : "رواية ورش", "folder" : "YasseenWarsh", "text" : "المصحف كاملا", "tosura" : "114" , "toaya" : "006", "Type" : 0, "active_sound" : 1 }
+    , 
+    { "shikh" : "مفتاح السلطني", "khatma" : "دوري أبي عمرو", "folder" : "MuftahDoriAmr", "text" : "المصحف كاملا", "tosura" : "114" , "toaya" : "006", "Type" : 0, "active_sound" : 1 }
+    , 
+    { "shikh" : "عبدالرشيد صوفي", "khatma" : "رواية السوسي", "folder" : "RashidSosi", "text" : "المصحف كاملا", "tosura" : "114" , "toaya" : "006", "Type" : 0, "active_sound" : 1 }
+    ]

@@ -1,0 +1,39 @@
+﻿[
+  {"shikh" : "أحمد طلبة", "khatma" : "رواية حفص", "folder" : "ATolbaHfs", "text" : "المصحف كاملا","tosura" : "114" , "toaya" : "006", "Type" : 0,"active_sound" : 1, "url":"http://sound.quraat.info/" ,"file_name_format":"tayseer" }
+  ,
+  { "shikh" : "أحمد طلبة", "khatma" : "بيان جمع الكبرى", "folder" : "A-Tolba", "text" : "المصحف كاملا", "tosura" : "114" , "toaya" : "006", "Type" : 1 , "active_sound" :1 , "url":"http://sound.quraat.info/" ,"file_name_format":"tayseer" }
+  ,
+  { "shikh" : "صالح عبدالمقصودصالح", "khatma" : "بيان جمع الصغرى", "folder" : "Saleh", "text" : "المصحف كاملا", "tosura" : "114" , "toaya" : "006", "Type" : 0, "active_sound" : 1 , "url":"http://sound.quraat.info/" ,"file_name_format":"tayseer" }
+  ,
+  { "shikh" : "طه الفهد", "khatma" : "جمع الصغرى", "folder" : "Taha", "text" : "المصحف كاملا", "tosura" : "114" , "toaya" : "006", "Type" : 0 , "active_sound" : 1 , "url":"http://sound.quraat.info/" ,"file_name_format":"tayseer" }
+  , 
+  { "shikh" : "هاني بركات", "khatma" : "جمع الكبرى", "folder" : "Hany", "text" : "المصحف كاملا", "tosura" : "114" , "toaya" : "006", "Type" : 1 , "active_sound" : 1 , "url":"http://sound.quraat.info/" ,"file_name_format":"tayseer" }
+  , 
+  { "shikh" : "حمزة الحبشي", "khatma" : "جمع الصغرى", "folder" : "Habashi", "text" : "المصحف كاملا", "tosura" : "114" , "toaya" : "006", "Type" : 0 , "active_sound" : 1 , "url":"http://sound.quraat.info/" ,"file_name_format":"tayseer" }
+  , 
+  { "shikh" : "حمادة خطاب", "khatma" : "الأول تعليمي الكبرى", "folder" : "HamadaK", "text" : "الجزء الأول", "tosura" : "002" , "toaya" : "141", "Type" : 1, "active_sound" : 1, "url":"http://sound.quraat.info/" ,"file_name_format":"tayseer"  }
+  , 
+  { "shikh" : "مجموعة أساتذة", "khatma" : "الأول تعليمي الصغرى", "folder" : "HamadaS", "text" : "الجزء الأول", "tosura" : "002" , "toaya" : "141", "Type" : 0, "active_sound" : 1 , "url":"http://sound.quraat.info/" ,"file_name_format":"tayseer" }
+  ,
+  { "shikh" : "مجموعة قراء", "khatma" : "بيان قراء الدرة", "folder" : "Dorra", "text" : "المصحف كاملا", "tosura" : "114" , "toaya" : "006", "Type" : 0 , "active_sound" : 1 , "url":"http://sound.quraat.info/" ,"file_name_format":"tayseer" }
+  , 
+  { "shikh" : "مجموعة قراء", "khatma" : "بيان أوجه قالون", "folder" : "Qalon", "text" : "المصحف كاملا", "tosura" : "114" , "toaya" : "006", "Type" : 0 , "active_sound" : 1 , "url":"http://sound.quraat.info/" ,"file_name_format":"tayseer" }
+  , 
+  { "shikh" : "مجموعة قراء", "khatma" : "بيان أوجه ورش", "folder" : "Warsh", "text" : "المصحف كاملا", "tosura" : "114" , "toaya" : "006", "Type" : 0 , "active_sound" : 1 , "url":"http://sound.quraat.info/" ,"file_name_format":"tayseer" }
+  ,
+  { "shikh" : "عبدالحكيم عبداللطيف", "khatma" : "رواية شعبة", "folder" : "AbdulHakim", "text" : "المصحف كاملا", "tosura" : "114" , "toaya" : "006", "Type" : 0 , "active_sound" : 1 , "url":"http://sound.quraat.info/" ,"file_name_format":"tayseer" }
+  , 
+  { "shikh" : "أحمد سمير", "khatma" : "حمزة براوييه", "folder" : "ahmedsamir", "text" : "أول النحل", "tosura" : "016" , "toaya" : "029", "Type" : 0 , "active_sound" : 1 , "url":"http://sound.quraat.info/" ,"file_name_format":"tayseer" }
+  , 
+  { "shikh" : "إبراهيم المغربي", "khatma" : "ورش الأصبهاني", "folder" : "almaghrbi", "text" : "سورة يوسف", "tosura" : "12" , "toaya" : "111", "Type" : 0 , "active_sound" : 1 , "url":"http://sound.quraat.info/" ,"file_name_format":"tayseer" }
+  , 
+  { "shikh" : "عبدالرحمن الحذيفي", "khatma" : "رواية قالون", "folder" : "HuzaifyQalon", "text" : "المصحف كاملا", "tosura" : "114" , "toaya" : "006", "Type" : 0, "active_sound" : 1 , "url":"http://sound.quraat.info/" ,"file_name_format":"tayseer"  }
+  , 
+  { "shikh" : "ياسين الجزائري", "khatma" : "رواية ورش", "folder" : "YasseenWarsh", "text" : "المصحف كاملا", "tosura" : "114" , "toaya" : "006", "Type" : 0, "active_sound" : 1 , "url":"http://sound.quraat.info/" ,"file_name_format":"tayseer"  }
+  , 
+  { "shikh" : "مفتاح السلطني", "khatma" : "دوري أبي عمرو", "folder" : "MuftahDoriAmr", "text" : "المصحف كاملا", "tosura" : "114" , "toaya" : "006", "Type" : 0, "active_sound" : 1 , "url":"http://sound.quraat.info/" ,"file_name_format":"tayseer" }
+  , 
+  { "shikh" : "عبدالرشيد صوفي", "khatma" : "رواية السوسي", "folder" : "RashidSosi", "text" : "المصحف كاملا", "tosura" : "114" , "toaya" : "006", "Type" : 0, "active_sound" : 1 , "url":"http://sound.quraat.info/" ,"file_name_format":"tayseer" }
+  , 
+  { "shikh" : "محمودخليل الحصري", "khatma" : "حفص مجود", "folder" : "husaryM", "text" : "المصحف كاملا", "tosura" : "114" , "toaya" : "006", "Type" : 0, "active_sound" : 1 , "url":"http://sound.quraat.info/" ,"file_name_format":"tayseer"  }
+]

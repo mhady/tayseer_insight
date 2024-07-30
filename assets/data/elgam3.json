@@ -1,0 +1,668 @@
+[
+    {
+        "id":1,
+        "sura":1,
+        "aya":1,
+        "sura_name":"الفاتحة" , 
+        "url":"http://AddonS.quraat.info/JFathaa.mp3",
+        "file":6
+    },
+    {
+        "id":2,
+        "sura":1,
+        "aya":2,
+        "sura_name":"الفاتحة" , 
+        "url":"http://AddonS.quraat.info/JFathaa.mp3",
+        "file":6
+    },
+    {
+        "id":3,
+        "sura":1,
+        "aya":3,
+        "sura_name":"الفاتحة" , 
+        "url":"http://AddonS.quraat.info/JFathaa.mp3",
+        "file":6
+    },
+    {
+        "id":4,
+        "sura":1,
+        "aya":4,
+        "sura_name":"الفاتحة" , 
+        "url":"http://AddonS.quraat.info/JFathaa.mp3",
+        "file":6
+    },
+    {
+        "id":5,
+        "sura":1,
+        "aya":5,
+        "sura_name":"الفاتحة" , 
+        "url":"http://AddonS.quraat.info/JFathaa.mp3",
+        "file":6
+    },
+    {
+        "id":6,
+        "sura":1,
+        "aya":6,
+        "sura_name":"الفاتحة" , 
+        "url":"http://AddonS.quraat.info/JFathaa.mp3",
+        "file":6
+    },
+    {
+        "id":7,
+        "sura":1,
+        "aya":7,
+        "sura_name":"الفاتحة" , 
+        "url":"http://AddonS.quraat.info/JTwoSuras.mp3",
+        "file":6
+    },
+    {
+        "id":9,
+        "sura":2,
+        "aya":2,
+        "sura_name":"البقرة" , 
+        "url":"http://AddonS.quraat.info/JBaqraa1st.mp3",
+        "file":6
+    },
+    {
+        "id":13,
+        "sura":2,
+        "aya":6,
+        "sura_name":"البقرة" , 
+        "url":"http://AddonS.quraat.info/S002A006J.mp3",
+        "file":6
+    },
+    {
+        "id":14,
+        "sura":2,
+        "aya":7,
+        "sura_name":"البقرة" , 
+        "url":"http://AddonS.quraat.info/S002A007J.mp3",
+        "file":6
+    },
+    {
+        "id":15,
+        "sura":2,
+        "aya":8,
+        "sura_name":"البقرة" , 
+        "url":"http://AddonS.quraat.info/S002A008J.mp3",
+        "file":6
+    },
+    {
+        "id":16,
+        "sura":2,
+        "aya":9,
+        "sura_name":"البقرة" , 
+        "url":"http://AddonS.quraat.info/S002A009J.mp3",
+        "file":6
+    },
+    {
+        "id":17,
+        "sura":2,
+        "aya":10,
+        "sura_name":"البقرة" , 
+        "url":"http://AddonS.quraat.info/S002A010J.mp3",
+        "file":6
+    },
+    {
+        "id":18,
+        "sura":2,
+        "aya":11,
+        "sura_name":"البقرة" , 
+        "url":"http://AddonS.quraat.info/S002A011J.mp3",
+        "file":6
+    },
+    {
+        "id":19,
+        "sura":2,
+        "aya":12,
+        "sura_name":"البقرة" , 
+        "url":"http://AddonS.quraat.info/S002A012J.mp3",
+        "file":6
+    },
+    {
+        "id":20,
+        "sura":2,
+        "aya":13,
+        "sura_name":"البقرة" , 
+        "url":"http://AddonS.quraat.info/S002A013J.mp3",
+        "file":6
+    },
+    {
+        "id":21,
+        "sura":2,
+        "aya":14,
+        "sura_name":"البقرة" , 
+        "url":"http://AddonS.quraat.info/S002A014J.mp3",
+        "file":6
+    },
+    {
+        "id":22,
+        "sura":2,
+        "aya":15,
+        "sura_name":"البقرة" , 
+        "url":"http://AddonS.quraat.info/S002A015J.mp3",
+        "file":6
+    },
+    {
+        "id":23,
+        "sura":2,
+        "aya":16,
+        "sura_name":"البقرة" , 
+        "url":"http://AddonS.quraat.info/S002A016J.mp3",
+        "file":6
+    },
+    {
+        "id":24,
+        "sura":2,
+        "aya":17,
+        "sura_name":"البقرة" , 
+        "url":"http://AddonS.quraat.info/S002A017J.mp3",
+        "file":6
+    },
+    {
+        "id":25,
+        "sura":2,
+        "aya":18,
+        "sura_name":"البقرة" , 
+        "url":"http://AddonS.quraat.info/S002A018J.mp3",
+        "file":6
+    },
+    {
+        "id":26,
+        "sura":2,
+        "aya":19,
+        "sura_name":"البقرة" , 
+        "url":"http://AddonS.quraat.info/S002A019J.mp3",
+        "file":6
+    },
+    {
+        "id":27,
+        "sura":2,
+        "aya":20,
+        "sura_name":"البقرة" , 
+        "url":"http://AddonS.quraat.info/S002A020J.mp3",
+        "file":6
+    },
+    {
+        "id":28,
+        "sura":2,
+        "aya":21,
+        "sura_name":"البقرة" , 
+        "url":"http://AddonS.quraat.info/S002A021J.mp3",
+        "file":6
+    },
+    {
+        "id":29,
+        "sura":2,
+        "aya":22,
+        "sura_name":"البقرة" , 
+        "url":"http://AddonS.quraat.info/S002A022J.mp3",
+        "file":6
+    },
+    {
+        "id":30,
+        "sura":2,
+        "aya":23,
+        "sura_name":"البقرة" , 
+        "url":"http://AddonS.quraat.info/S002A023J.mp3",
+        "file":6
+    },
+    {
+        "id":31,
+        "sura":2,
+        "aya":24,
+        "sura_name":"البقرة" , 
+        "url":"http://AddonS.quraat.info/S002A024J.mp3",
+        "file":6
+    },
+    {
+        "id":32,
+        "sura":2,
+        "aya":25,
+        "sura_name":"البقرة" , 
+        "url":"http://AddonS.quraat.info/S002A025J.mp3",
+        "file":6
+    },
+    {
+        "id":33,
+        "sura":2,
+        "aya":26,
+        "sura_name":"البقرة" , 
+        "url":"http://AddonS.quraat.info/S002A026J.mp3",
+        "file":6
+    },
+    {
+        "id":34,
+        "sura":2,
+        "aya":27,
+        "sura_name":"البقرة" , 
+        "url":"http://AddonS.quraat.info/S002A027J.mp3",
+        "file":6
+    },
+    {
+        "id":35,
+        "sura":2,
+        "aya":28,
+        "sura_name":"البقرة" , 
+        "url":"http://AddonS.quraat.info/S002A028J.mp3",
+        "file":6
+    },
+    {
+        "id":36,
+        "sura":2,
+        "aya":29,
+        "sura_name":"البقرة" , 
+        "url":"http://AddonS.quraat.info/S002A029J.mp3",
+        "file":6
+    },
+    {
+        "id":37,
+        "sura":2,
+        "aya":30,
+        "sura_name":"البقرة" , 
+        "url":"http://AddonS.quraat.info/S002A030J.mp3",
+        "file":6
+    },
+    {
+        "id":38,
+        "sura":2,
+        "aya":31,
+        "sura_name":"البقرة" , 
+        "url":"http://AddonS.quraat.info/S002A031J.mp3",
+        "file":6
+    },
+    {
+        "id":39,
+        "sura":2,
+        "aya":32,
+        "sura_name":"البقرة" , 
+        "url":"http://AddonS.quraat.info/S002A032J.mp3",
+        "file":6
+    },
+    {
+        "id":40,
+        "sura":2,
+        "aya":33,
+        "sura_name":"البقرة" , 
+        "url":"http://AddonS.quraat.info/S002A033J.mp3",
+        "file":6
+    },
+    {
+        "id":41,
+        "sura":2,
+        "aya":34,
+        "sura_name":"البقرة" , 
+        "url":"http://AddonS.quraat.info/S002A034J.mp3",
+        "file":6
+    },
+    {
+        "id":42,
+        "sura":2,
+        "aya":35,
+        "sura_name":"البقرة" , 
+        "url":"http://AddonS.quraat.info/S002A035J.mp3",
+        "file":6
+    },
+    {
+        "id":43,
+        "sura":2,
+        "aya":36,
+        "sura_name":"البقرة" , 
+        "url":"http://AddonS.quraat.info/S002A036J.mp3",
+        "file":6
+    },
+    {
+        "id":44,
+        "sura":2,
+        "aya":37,
+        "sura_name":"البقرة" , 
+        "url":"http://AddonS.quraat.info/S002A037J.mp3",
+        "file":6
+    },
+    {
+        "id":45,
+        "sura":2,
+        "aya":38,
+        "sura_name":"البقرة" , 
+        "url":"http://AddonS.quraat.info/S002A038J.mp3",
+        "file":6
+    },
+    {
+        "id":46,
+        "sura":2,
+        "aya":39,
+        "sura_name":"البقرة" , 
+        "url":"http://AddonS.quraat.info/S002A039J.mp3",
+        "file":6
+    },
+    {
+        "id":47,
+        "sura":2,
+        "aya":40,
+        "sura_name":"البقرة" , 
+        "url":"http://AddonS.quraat.info/S002A040J.mp3",
+        "file":6
+    },
+    {
+        "id":48,
+        "sura":2,
+        "aya":41,
+        "sura_name":"البقرة" , 
+        "url":"http://AddonS.quraat.info/S002A041J.mp3",
+        "file":6
+    },
+    {
+        "id":49,
+        "sura":2,
+        "aya":42,
+        "sura_name":"البقرة" , 
+        "url":"http://AddonS.quraat.info/S002A042J.mp3",
+        "file":6
+    },
+    {
+        "id":50,
+        "sura":2,
+        "aya":43,
+        "sura_name":"البقرة" , 
+        "url":"http://AddonS.quraat.info/S002A043J.mp3",
+        "file":6
+    }
+,
+    {
+        "id":51,
+        "sura":2,
+        "aya":54,
+        "sura_name":"البقرة" , 
+        "url":"http://AddonS.quraat.info/S002A054J.mp3",
+        "file":6
+    },
+    {
+        "id":52,
+        "sura":2,
+        "aya":55,
+        "sura_name":"البقرة" , 
+        "url":"http://AddonS.quraat.info/S002A055J.mp3",
+        "file":6
+    },
+    {
+        "id":53,
+        "sura":2,
+        "aya":83,
+        "sura_name":"البقرة" , 
+        "url":"http://AddonS.quraat.info/S002A083J.mp3",
+        "file":6
+    },
+    {
+        "id":54,
+        "sura":2,
+        "aya":85,
+        "sura_name":"البقرة" , 
+        "url":"http://AddonS.quraat.info/S002A085J.mp3",
+        "file":6
+    },
+    {
+        "id":55,
+        "sura":2,
+        "aya":98,
+        "sura_name":"البقرة" , 
+        "url":"http://AddonS.quraat.info/S002A098J.mp3",
+        "file":6
+    },
+    {
+        "id":56,
+        "sura":2,
+        "aya":106,
+        "sura_name":"البقرة" , 
+        "url":"http://AddonS.quraat.info/S002A106J.mp3",
+        "file":6
+    },
+    {
+        "id":57,
+        "sura":2,
+        "aya":125,
+        "sura_name":"البقرة" , 
+        "url":"http://AddonS.quraat.info/S002A125J.mp3",
+        "file":6
+    },
+    {
+        "id":58,
+        "sura":2,
+        "aya":140,
+        "sura_name":"البقرة" , 
+        "url":"http://AddonS.quraat.info/S002A140J.mp3",
+        "file":6
+    },
+    {
+        "id":59,
+        "sura":2,
+        "aya":142,
+        "sura_name":"البقرة" , 
+        "url":"http://AddonS.quraat.info/S002A142J.mp3",
+        "file":6
+    },
+    {
+        "id":60,
+        "sura":2,
+        "aya":165,
+        "sura_name":"البقرة" , 
+        "url":"http://AddonS.quraat.info/S002A165J.mp3",
+        "file":6
+    },
+    {
+        "id":61,
+        "sura":2,
+        "aya":173,
+        "sura_name":"البقرة" , 
+        "url":"http://AddonS.quraat.info/S002A173J.mp3",
+        "file":6
+    },
+    {
+        "id":62,
+        "sura":2,
+        "aya":177,
+        "sura_name":"البقرة" , 
+        "url":"http://AddonS.quraat.info/S002A177J.mp3",
+        "file":6
+    },
+    {
+        "id":63,
+        "sura":2,
+        "aya":184,
+        "sura_name":"البقرة" , 
+        "url":"http://AddonS.quraat.info/S002A184J.mp3",
+        "file":6
+    },
+    {
+        "id":64,
+        "sura":2,
+        "aya":185,
+        "sura_name":"البقرة" , 
+        "url":"http://AddonS.quraat.info/S002A185J.mp3",
+        "file":6
+    },
+    {
+        "id":65,
+        "sura":2,
+        "aya":186,
+        "sura_name":"البقرة" , 
+        "url":"http://AddonS.quraat.info/S002A186J.mp3",
+        "file":6
+    },
+    {
+        "id":66,
+        "sura":2,
+        "aya":189,
+        "sura_name":"البقرة" , 
+        "url":"http://AddonS.quraat.info/S002A189J.mp3",
+        "file":6
+    },
+    {
+        "id":67,
+        "sura":2,
+        "aya":208,
+        "sura_name":"البقرة" , 
+        "url":"http://AddonS.quraat.info/S002A208J.mp3",
+        "file":6
+    },
+    {
+        "id":68,
+        "sura":2,
+        "aya":213,
+        "sura_name":"البقرة" , 
+        "url":"http://AddonS.quraat.info/S002A213J.mp3",
+        "file":6
+    },
+    {
+        "id":69,
+        "sura":2,
+        "aya":219,
+        "sura_name":"البقرة" , 
+        "url":"http://AddonS.quraat.info/S002A219J.mp3",
+        "file":6
+    },
+    {
+        "id":70,
+        "sura":2,
+        "aya":229,
+        "sura_name":"البقرة" , 
+        "url":"http://AddonS.quraat.info/S002A229J.mp3",
+        "file":6
+    },
+    {
+        "id":71,
+        "sura":2,
+        "aya":233,
+        "sura_name":"البقرة" , 
+        "url":"http://AddonS.quraat.info/S002A233J.mp3",
+        "file":6
+    },
+    {
+        "id":72,
+        "sura":2,
+        "aya":236,
+        "sura_name":"البقرة" , 
+        "url":"http://AddonS.quraat.info/S002A236J.mp3",
+        "file":6
+    },
+    {
+        "id":73,
+        "sura":2,
+        "aya":245,
+        "sura_name":"البقرة" , 
+        "url":"http://AddonS.quraat.info/S002A245J.mp3",
+        "file":6
+    },
+    {
+        "id":74,
+        "sura":2,
+        "aya":246,
+        "sura_name":"البقرة" , 
+        "url":"http://AddonS.quraat.info/S002A246J.mp3",
+        "file":6
+    },
+    {
+        "id":75,
+        "sura":2,
+        "aya":249,
+        "sura_name":"البقرة" , 
+        "url":"http://AddonS.quraat.info/S002A249J.mp3",
+        "file":6
+    },
+    {
+        "id":76,
+        "sura":2,
+        "aya":254,
+        "sura_name":"البقرة" , 
+        "url":"http://AddonS.quraat.info/S002A254J.mp3",
+        "file":6
+    },
+    {
+        "id":77,
+        "sura":2,
+        "aya":259,
+        "sura_name":"البقرة" , 
+        "url":"http://AddonS.quraat.info/S002A259J.mp3",
+        "file":6
+    },
+    {
+        "id":78,
+        "sura":2,
+        "aya":260,
+        "sura_name":"البقرة" , 
+        "url":"http://AddonS.quraat.info/S002A260J.mp3",
+        "file":6
+    },
+    {
+        "id":79,
+        "sura":2,
+        "aya":261,
+        "sura_name":"البقرة" , 
+        "url":"http://AddonS.quraat.info/S002A261J.mp3",
+        "file":6
+    },
+    {
+        "id":80,
+        "sura":2,
+        "aya":265,
+        "sura_name":"البقرة" , 
+        "url":"http://AddonS.quraat.info/S002A265J.mp3",
+        "file":6
+    },
+    {
+        "id":81,
+        "sura":2,
+        "aya":271,
+        "sura_name":"البقرة" , 
+        "url":"http://AddonS.quraat.info/S002A271J.mp3",
+        "file":6
+    },
+    {
+        "id":82,
+        "sura":2,
+        "aya":280,
+        "sura_name":"البقرة" , 
+        "url":"http://AddonS.quraat.info/S002A280J.mp3",
+        "file":6
+    },
+    {
+        "id":83,
+        "sura":2,
+        "aya":282,
+        "sura_name":"البقرة" , 
+        "url":"http://AddonS.quraat.info/S002A282J.mp3",
+        "file":6
+    },
+    {
+        "id":84,
+        "sura":2,
+        "aya":284,
+        "sura_name":"البقرة" , 
+        "url":"http://AddonS.quraat.info/S002A284J.mp3",
+        "file":6
+    }
+,
+    {
+        "id":85,
+        "sura":3,
+        "aya":169,
+        "sura_name":"آل عمران" , 
+        "url":"http://AddonS.quraat.info/S003A169J.mp3",
+        "file":6
+    },
+    {
+        "id":86,
+        "sura":15,
+        "aya":45,
+        "sura_name":"الحجر" , 
+        "url":"http://AddonS.quraat.info/S015A045J.mp3",
+        "file":6
+    },
+    {
+        "id":87,
+        "sura":15,
+        "aya":46,
+        "sura_name":"الحجر" , 
+        "url":"http://AddonS.quraat.info/S015A046J.mp3",
+        "file":6
+    }
+]
