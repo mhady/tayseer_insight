@@ -71,8 +71,8 @@ class AdaptiveTextSize {
   getadaptiveTextSize(BuildContext context, dynamic value) {
     // 720 is medium screen height
     dynamic newSize = (value / 400) * MediaQuery.of(context).size.width;
-    var maxSize = (22).toDouble();
-    return newSize > 22 ? maxSize : newSize;
+    var maxSize = (15).toDouble();
+    return newSize > maxSize ? maxSize : newSize;
   }
 }
 

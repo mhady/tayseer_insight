@@ -122,7 +122,7 @@ class HomeState extends State<Home> {
           title: Text("تيسيرالقراءات",
               style: TextStyle(
                   color: Colors.brown[100],
-                  fontSize: 20.0,
+                  fontSize: 18.0,
                   fontWeight: FontWeight.bold)),
         ),
 //////////////////BODY///////////////
@@ -171,7 +171,7 @@ class HomeState extends State<Home> {
                             "الفاتحة",
                             style: TextStyle(
                               color: Colors.brown[100],
-                              fontSize: 20.0,
+                              fontSize: 18.0,
                               fontWeight: FontWeight.bold,
                             ),
                           ),
@@ -179,7 +179,7 @@ class HomeState extends State<Home> {
                             "الى الأنفال",
                             style: TextStyle(
                                 color: Colors.brown[100],
-                                fontSize: 20.0,
+                                fontSize: 18.0,
                                 fontWeight: FontWeight.bold),
                           ),
                         ]),
@@ -214,14 +214,14 @@ class HomeState extends State<Home> {
                             "التوبة",
                             style: TextStyle(
                                 color: Colors.brown[100],
-                                fontSize: 20.0,
+                                fontSize: 18.0,
                                 fontWeight: FontWeight.bold),
                           ),
                           Text(
                             "الى النحل",
                             style: TextStyle(
                                 color: Colors.brown[100],
-                                fontSize: 20.0,
+                                fontSize: 18.0,
                                 fontWeight: FontWeight.bold),
                           ),
                         ]),
@@ -256,14 +256,14 @@ class HomeState extends State<Home> {
                             "الإسراء",
                             style: TextStyle(
                                 color: Colors.brown[100],
-                                fontSize: 20.0,
+                                fontSize: 18.0,
                                 fontWeight: FontWeight.bold),
                           ),
                           Text(
                             "الى النور",
                             style: TextStyle(
                                 color: Colors.brown[100],
-                                fontSize: 20.0,
+                                fontSize: 18.0,
                                 fontWeight: FontWeight.bold),
                           ),
                         ]),
@@ -298,7 +298,7 @@ class HomeState extends State<Home> {
                             "الفرقان",
                             style: TextStyle(
                                 color: Colors.brown[100],
-                                fontSize: 20.0,
+                                fontSize: 18.0,
                                 fontWeight: FontWeight.bold),
                           ),
                           Text(
@@ -340,14 +340,14 @@ class HomeState extends State<Home> {
                             "الأحزاب",
                             style: TextStyle(
                                 color: Colors.brown[100],
-                                fontSize: 20.0,
+                                fontSize: 18.0,
                                 fontWeight: FontWeight.bold),
                           ),
                           Text(
                             "الى غافر",
                             style: TextStyle(
                                 color: Colors.brown[100],
-                                fontSize: 20.0,
+                                fontSize: 18.0,
                                 fontWeight: FontWeight.bold),
                           ),
                         ]),
@@ -382,14 +382,14 @@ class HomeState extends State<Home> {
                             "فصلت",
                             style: TextStyle(
                                 color: Colors.brown[100],
-                                fontSize: 20.0,
+                                fontSize: 18.0,
                                 fontWeight: FontWeight.bold),
                           ),
                           Text(
                             "الى الفتح",
                             style: TextStyle(
                                 color: Colors.brown[100],
-                                fontSize: 20.0,
+                                fontSize: 18.0,
                                 fontWeight: FontWeight.bold),
                           ),
                         ]),
@@ -467,7 +467,7 @@ class HomeState extends State<Home> {
                             "المجادلة",
                             style: TextStyle(
                                 color: Colors.brown[100],
-                                fontSize: 20.0,
+                                fontSize: 18.0,
                                 fontWeight: FontWeight.bold),
                           ),
                           Text(
@@ -509,14 +509,14 @@ class HomeState extends State<Home> {
                             "الملك",
                             style: TextStyle(
                                 color: Colors.brown[100],
-                                fontSize: 20.0,
+                                fontSize: 18.0,
                                 fontWeight: FontWeight.bold),
                           ),
                           Text(
                             "الى النبأ",
                             style: TextStyle(
                                 color: Colors.brown[100],
-                                fontSize: 20.0,
+                                fontSize: 18.0,
                                 fontWeight: FontWeight.bold),
                           ),
                         ]),
@@ -552,14 +552,14 @@ class HomeState extends State<Home> {
                             "النازعات",
                             style: TextStyle(
                                 color: Colors.brown[100],
-                                fontSize: 20.0,
+                                fontSize: 18.0,
                                 fontWeight: FontWeight.bold),
                           ),
                           Text(
                             "الى البلد",
                             style: TextStyle(
                                 color: Colors.brown[100],
-                                fontSize: 20.0,
+                                fontSize: 18.0,
                                 fontWeight: FontWeight.bold),
                           ),
                         ]),
@@ -594,14 +594,14 @@ class HomeState extends State<Home> {
                             "الشمس",
                             style: TextStyle(
                                 color: Colors.brown[100],
-                                fontSize: 20.0,
+                                fontSize: 18.0,
                                 fontWeight: FontWeight.bold),
                           ),
                           Text(
                             "الى التكاثر",
                             style: TextStyle(
                                 color: Colors.brown[100],
-                                fontSize: 20.0,
+                                fontSize: 18.0,
                                 fontWeight: FontWeight.bold),
                           ),
                         ]),
@@ -636,14 +636,14 @@ class HomeState extends State<Home> {
                             "العصر",
                             style: TextStyle(
                                 color: Colors.brown[100],
-                                fontSize: 20.0,
+                                fontSize: 18.0,
                                 fontWeight: FontWeight.bold),
                           ),
                           Text(
                             "الى الناس",
                             style: TextStyle(
                                 color: Colors.brown[100],
-                                fontSize: 20.0,
+                                fontSize: 18.0,
                                 fontWeight: FontWeight.bold),
                           ),
                         ]),
@@ -670,46 +670,25 @@ class HomeState extends State<Home> {
             padding: const EdgeInsets.all(1),
             child: Row(
               mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-              children: <Widget>[
-                Expanded(
-                  child: Container(
-                     height: 70,
-                    child: ButtonTheme(
-                      minWidth: MediaQuery.of(context).size.width / 4,
-                      height: 80.0,
-                      child: TyseerButton( 
+              children: <Widget>[ 
+                     TyseerButton( 
                         buttonHeight: 70,
                         buttonWidth: MediaQuery.of(context).size.width / 4,
                         text:   "المفضلات",
                         onPressed: () {
                        Navigator.pushNamed(context, 'favorites');
                          },
-                      ), 
-                        
-                    ),
-                  ),
-                ),
-                Expanded(
-                  child: Container(
-                     height: 70,
-                    child: ButtonTheme(
-                      minWidth: MediaQuery.of(context).size.width / 4,
-                      height: 80.0,
-                      child: TyseerButton(
+                      ),  
+                
+               TyseerButton(
                         buttonHeight: 70,
                         buttonWidth: MediaQuery.of(context).size.width / 4,
                         text:  "الإعدادات",
                         onPressed: () {
                          Navigator.pushNamed(context, 'settings');
                         },
-                      ), 
-                    ),
-                  ),
-                ),
-                Expanded(
-                  child: Container(
-                     height: 70,
-                    child: 
+                      ),  
+                   
                     TyseerButton(
                         buttonHeight: 70,
                         buttonWidth: MediaQuery.of(context).size.width / 4,
@@ -718,13 +697,7 @@ class HomeState extends State<Home> {
                           Navigator.pushNamed(context, 'Khatamat');
                         },
                       ),
-                     
-                  ),
-                ),
-                Expanded(
-                   child: Container(
-                    height: 70,
-                    child:
+               
                     TyseerButton(
                         buttonHeight: 70,
                         buttonWidth: MediaQuery.of(context).size.width / 4,
@@ -732,9 +705,7 @@ class HomeState extends State<Home> {
                         onPressed: () {
                           Navigator.pushNamed(context, 'extraspage');
                         },
-                      ),
-                  ),
-                ),
+                      ), 
               ],
             ),
           ),)
