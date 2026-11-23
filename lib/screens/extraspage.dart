@@ -1,6 +1,10 @@
+import 'package:tayseer_insight/utils/log.dart';
 import 'dart:convert';
 
 import 'package:flutter/material.dart';
+import 'package:tayseer_insight/widgets/app_button.dart';
+import 'package:tayseer_insight/widgets/app_scaffold.dart';
+
 import 'package:tayseer_insight/globals.dart' as globals;
 import 'package:http/http.dart' as http;
 import 'package:tayseer_insight/widgets/TyseerButton.dart';
@@ -113,72 +117,21 @@ class ExtrasState extends State<Extras> {
   }
 
   Widget getNextPrvius() {
-    return new Wrap(
+    return AppButtonWrap(
       children: [
-//////////////////////////BUTTON (NEXT)//////////////////////////////
-        Container(
-          decoration: BoxDecoration(
-            color: Colors.brown[200],
-          ),
-          child: new ButtonTheme(
-            height: 80.0,
-            minWidth: MediaQuery.of(context).size.width / 2.05,
-            child: OutlinedButton(
-              onPressed: () {
-                // _loadAarabData();
-                getNext();
-              },
-              style: OutlinedButton.styleFrom( 
-                      side: BorderSide(
-                      color: Color(0xff22160B), //Color of the border
-                      style: BorderStyle.solid, //Style of the border
-                      width: 0.8, //width of the border
-                    ),
-                    foregroundColor : Colors.brown[100], // Text Color
-                   backgroundColor: Color(0xff22160B), 
-                    //splashColor: Colors.grey,
-                  ),
-             
-              child: Text("التالي",
-                  style:
-                      TextStyle(fontSize: 20.0, fontWeight: FontWeight.bold)
-                      ),
-              
-             
-            ),
-          ),
+        AppButton(
+          label: 'التالي',
+          fontSize: 20.0,
+          minHeight: 80,
+          bold: true,
+          onPressed: getNext,
         ),
-///////////////////////BUTTON (PREVIOUS)////////////////////////////////
-        Container(
-          decoration: new BoxDecoration(
-            color: Colors.brown[200],
-          ),
-          child: new ButtonTheme(
-            height: 80.0,
-            minWidth: MediaQuery.of(context).size.width / 2.05,
-            child: OutlinedButton(
-              onPressed: () {
-                // _loadAarabData();
-                getPrevoius();
-              },
-               style: OutlinedButton.styleFrom( 
-                      side: BorderSide(
-                      color: Color(0xff22160B), //Color of the border
-                      style: BorderStyle.solid, //Style of the border
-                      width: 0.8, //width of the border
-                    ),
-                     foregroundColor : Colors.brown[100], // Text Color
-                   backgroundColor: Color(0xff22160B), 
-                    //splashColor: Colors.grey,
-                  ),
-            
-              child: Text("السابق",
-                  style:
-                      TextStyle(fontSize: 20.0, fontWeight: FontWeight.bold)),
-                        
-              
-            ),
-          ),
+        AppButton(
+          label: 'السابق',
+          fontSize: 20.0,
+          minHeight: 80,
+          bold: true,
+          onPressed: getPrevoius,
         ),
       ],
     );
@@ -297,7 +250,7 @@ class ExtrasState extends State<Extras> {
 
                     setState(() {});
                     if (audioPlayerQ.isStarted) {
-                      print(
+                      log(
                           '---------------------------------isStarted is true ');
                     }
                     //  showMyDialog(Khadmat_list![index]["sura_id"]);
@@ -331,7 +284,7 @@ class ExtrasState extends State<Extras> {
 
 ///////////////////SLIDER WIDGET//////////////////////
   Widget slider() {
-    print('max is =' + this._duration.inSeconds.toString());
+    log('max is =' + this._duration.inSeconds.toString());
     return Padding(
       padding: const EdgeInsets.only(top: 40.0),
       child: Slider(
@@ -408,88 +361,44 @@ class ExtrasState extends State<Extras> {
         return globals.GlobalUI().getLoadingContent();
       }
     }
-    return Scaffold(
-//////////////////APPBAR///////////////
-        appBar: AppBar(
-          leading: Padding(
-            padding: EdgeInsets.symmetric(vertical: 10.0, horizontal: 0.0),
-            child: new GestureDetector(
-              onTap: () {
-                audioPlayerQ.pause();
-                if (ScreenMode == 'khadamat' || ScreenMode == "play")
-                  Navigator.of(context).pop();
-                else if (ScreenMode == 'khedma')
-                  getKhadmat();
-                else {
-                  ScreenMode = 'khedma';
-                }
-              },
-              child: Text("الرجوع",
-                  style: TextStyle(
-                      fontSize: 16.0,
-                      color: Colors.brown[100],
-                      fontWeight: FontWeight.bold)),
-            ),
+    return AppScaffold(
+      title: KhedmaName,
+      onBack: () {
+        audioPlayerQ.pause();
+        if (ScreenMode == 'khadamat' || ScreenMode == "play") {
+          Navigator.of(context).pop();
+        } else if (ScreenMode == 'khedma') {
+          getKhadmat();
+        } else {
+          ScreenMode = 'khedma';
+        }
+      },
+      body: getPageContant(),
+      bottomBar: AppBottomBar(
+        children: [
+          TyseerButton(
+            buttonHeight: 70,
+            text: 'المفضلات',
+            onPressed: () {
+              audioPlayerQ.pause();
+              Navigator.pushNamed(context, 'favorites');
+            },
           ),
-          centerTitle: true,
-          backgroundColor: Color(0xff22160B),
-          title: Text(KhedmaName,
-              style: TextStyle(
-                  color: Colors.brown[100],
-                  fontSize: 23.0,
-                  fontWeight: FontWeight.bold)),
-        ),
-//////////////////BODY///////////////
-        body: getPageContant(),
-        /////////////////////////////////////////FOOTER//////////////////////////////////////////////
-        bottomNavigationBar: Container(
-            decoration: BoxDecoration(
-              //  color: Color(0xff22160B),
-              image: DecorationImage(
-                image: AssetImage("assets/images/islam.png"),
-                fit: BoxFit.cover,
-              ),
-            ),
-            width: MediaQuery.of(context).size.width,
-            // color: Colors.white,
-            margin: const EdgeInsets.only(bottom: 2.0),
-            child: Padding(
-              padding: const EdgeInsets.all(1),
-              child: new Row(
-                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                children: <Widget>[
-//////////////////BUTTON (FAVORITES)///////////////
-                  TyseerButton(
-                        buttonHeight: 70,
-                        buttonWidth: MediaQuery.of(context).size.width / 3,
-                        text: "المفضلات",
-                        onPressed: () {
-                       audioPlayerQ.pause();
-                        audioPlayerQ.pause();
-                        Navigator.pushNamed(context, 'favorites');
-                        }),
-                   
-//////////////////BUTTON (SETTINGS)///////////////
-                   TyseerButton(
-                        buttonHeight: 70,
-                        buttonWidth: MediaQuery.of(context).size.width / 3,
-                        text: "الإعدادات",
-                        onPressed: () {
-                       audioPlayerQ.pause();
-                        Navigator.pushNamed(context, 'settings');
-                        }),
-                   
-//////////////////BUTTON (HOME)///////////////`
-                  TyseerButton(
-                        buttonHeight: 70,
-                        buttonWidth: MediaQuery.of(context).size.width / 3,
-                        text: "الرئيسية",
-                        onPressed: () {
-                        Navigator.pushNamed(context, 'Home');
-                        }),
-                   
-                ],
-              ),
-            )));
+          TyseerButton(
+            buttonHeight: 70,
+            text: 'الإعدادات',
+            onPressed: () {
+              audioPlayerQ.pause();
+              Navigator.pushNamed(context, 'settings');
+            },
+          ),
+          TyseerButton(
+            buttonHeight: 70,
+            text: 'الرئيسية',
+            onPressed: () => Navigator.pushNamed(context, 'Home'),
+          ),
+        ],
+      ),
+    );
   }
 }

@@ -1,9 +1,15 @@
+import 'package:tayseer_insight/utils/log.dart';
 import 'package:flutter/material.dart';
+import 'package:tayseer_insight/services/favorites_store.dart';
+import 'package:tayseer_insight/utils/announcer.dart';
+import 'package:tayseer_insight/widgets/TyseerButton.dart';
+import 'package:tayseer_insight/widgets/app_button.dart';
+import 'package:tayseer_insight/widgets/app_dialog.dart';
+import 'package:tayseer_insight/widgets/app_scaffold.dart';
 
 import 'package:tayseer_insight/globals.dart' as globals;
 import 'dart:convert';
-import 'package:flutter/services.dart'
-    show Clipboard, ClipboardData, rootBundle;
+import 'package:flutter/services.dart' show rootBundle;
 import 'package:shared_preferences/shared_preferences.dart';
 // import 'package:simple_permissions/simple_permissions.dart';
 import 'dart:async';
@@ -21,7 +27,7 @@ import 'package:tayseer_insight/globals.dart';
 class SubPage extends StatefulWidget {
   final AyaSoraNumber? arguments;
   SubPage({
-    @required this.arguments,
+    this.arguments,
   });
   @override
   State<StatefulWidget> createState() {
@@ -51,11 +57,6 @@ class SubPageState extends State<SubPage> {
   String? firstWord;
   String? secondWord;
   String? thirdWord;
-  String? firstsharedFavorite;
-  String? secondsharedFavorite;
-  String? thirdsharedFavorite;
-  String? fourthsharedFavorite;
-  String? fifthsharedFavorite;
   int? ayatextLength;
   int? tafseerFolder;
   int? introTndex;
@@ -99,7 +100,6 @@ class SubPageState extends State<SubPage> {
       await _loadAarabData();
       await _loadSoraData();
       await _loadTafseerData();
-      await getFavorites();
 
       await _loadAyaText();
 
@@ -113,7 +113,7 @@ class SubPageState extends State<SubPage> {
       setState(() {
         data_ready = true;
         setPlayUrl();
-        print('all data ready');
+        log('all data ready');
       });
     });
   }
@@ -123,7 +123,7 @@ class SubPageState extends State<SubPage> {
   }
 
   void onPlayerCompletion() {
-    print('onPlayerCompletion called  ');
+    log('onPlayerCompletion called  ');
 
     if (this.continuosReading) {
       if (lastAya == currrentAya) {
@@ -145,7 +145,7 @@ class SubPageState extends State<SubPage> {
   }
   // advancedPlayer.durationHandler = (d) => setState(() {
   //   _duration = d;
-  //   // print(_duration);
+  //   // log(_duration);
   // });
 
   // advancedPlayer.positionHandler = (p) => setState(() {
@@ -157,7 +157,7 @@ class SubPageState extends State<SubPage> {
   //       _position = p;
   //   }
 
-  // // print(_position);
+  // // log(_position);
   //    if(isStopped== true){
   //      isStarted=false;
   //   buttonValue.text="تشغيل";
@@ -249,7 +249,7 @@ class SubPageState extends State<SubPage> {
     if (currrentSora == 0 || currrentAya == 0) return;
     audioPlayerQ.setIsLocal(false);
     String audioFilePath = "";
-    print('currrentSora=' +
+    log('currrentSora=' +
         currrentSora.toString() +
         " currrentAya =" +
         currrentAya.toString());
@@ -270,8 +270,8 @@ class SubPageState extends State<SubPage> {
           myQare2!.firstWhere((e) => e['folder'] == globals.qre2Folder);
       if (item['file_name_format'] == "tayseer") {
         if (int.parse(item['tosura']) < int.parse(sorsstr)) {
-          print(int.parse(item['tosura']));
-          print(int.parse(sorsstr));
+          log(int.parse(item['tosura']));
+          log(int.parse(sorsstr));
           onlineURL = globals.audioUrl +
               "ATolbaHfs" +
               "/S$sorsstr/S${sorsstr}A$ayastr.mp3";
@@ -288,8 +288,8 @@ class SubPageState extends State<SubPage> {
       if (int.parse(item['tosura']) == int.parse(sorsstr)) {
         if (int.parse(item['toaya']) < int.parse(ayastr)) {
           //globals.qre2Folder = "ATolbaHfs";
-          print(int.parse(item['toaya']));
-          print(int.parse(ayastr));
+          log(int.parse(item['toaya']));
+          log(int.parse(ayastr));
           onlineURL = globals.audioUrl +
               "ATolbaHfs" +
               "/S$sorsstr/S${sorsstr}A$ayastr.mp3";
@@ -299,7 +299,7 @@ class SubPageState extends State<SubPage> {
               "/S$sorsstr/S${sorsstr}A$ayastr.mp3";
         }
       }
-      print('onlineURL audio play file $onlineURL');
+      log('onlineURL audio play file $onlineURL');
       audioFilePath = onlineURL;
       //  onlineURL='http://sound.quraat.info/Taha/S002/S002A271.mp3';
 
@@ -335,17 +335,17 @@ class SubPageState extends State<SubPage> {
       }
 
       audioPlayerQ.setPlayUrl(audioFilePath);
-      print(audioFilePath);
+      log(audioFilePath);
 
       // initPlayer();
 
       // else{
       // AudioProvider audioProvider = new AudioProvider(onlineURL);
-      //   print(onlineURL);
+      //   log(onlineURL);
       // String localUrl = await audioProvider.load();
       //   // audioCache.play(localUrl);
       //   await advancedPlayer.play(localUrl);
-      //   print(localUrl);
+      //   log(localUrl);
       // }
 
       // setState(() {
@@ -369,8 +369,8 @@ class SubPageState extends State<SubPage> {
           myQare2!.firstWhere((e) => e['folder'] == globals.qre2Folder);
       if (item['file_name_format'] == "tayseer") {
         if (int.parse(item['tosura']) < int.parse(sorsstr)) {
-          print(int.parse(item['tosura']));
-          print(int.parse(sorsstr));
+          log(int.parse(item['tosura']));
+          log(int.parse(sorsstr));
           onlineURL = globals.audioUrl +
               "ATolbaHfs" +
               "/S$sorsstr/S${sorsstr}A$ayastr.mp3";
@@ -386,8 +386,8 @@ class SubPageState extends State<SubPage> {
 
       if (int.parse(item['tosura']) == int.parse(sorsstr)) {
         if (int.parse(item['toaya']) < int.parse(ayastr)) {
-          print(int.parse(item['toaya']));
-          print(int.parse(ayastr));
+          log(int.parse(item['toaya']));
+          log(int.parse(ayastr));
           onlineURL = globals.audioUrl +
               "ATolbaHfs" +
               "/S$sorsstr/S${sorsstr}A$ayastr.mp3";
@@ -399,12 +399,12 @@ class SubPageState extends State<SubPage> {
       }
       //  AudioProvider audioProvider = new AudioProvider(onlineURL);
       audioPlayerQ.setPlayUrl(onlineURL);
-      print(onlineURL);
+      log(onlineURL);
       // String localUrl = await audioProvider.load();
       //   audioCache.clear(localUrl);
       //   // audioCache.clearCache();
       //   await audioCache.play(localUrl);
-      //   print(localUrl);
+      //   log(localUrl);
 
       // setState(() {
       //   isStarted = true;
@@ -444,7 +444,7 @@ class SubPageState extends State<SubPage> {
       }
     }
     tafseerLines!.clear();
-    // print(globals.tafseerFolder);
+    // log(globals.tafseerFolder);
     tafseerFolder = globals.tafseerFolder;
     String jsonAYA = await rootBundle
         .loadString("assets/data/tafseer_json/$tafseerFolder.json");
@@ -459,7 +459,7 @@ class SubPageState extends State<SubPage> {
       String ayaValue = (currrentAya).toString();
       String soraValue = format(ayaSora!.sora!);
       String sharedAya = ayaformat(currrentAya);
-      print("************************ayaaaaa$sharedAya");
+      log("************************ayaaaaa$sharedAya");
       String sharedSora = ayaformat(currrentSora);
       String sharedURL = globals.audioUrl +
           globals.qre2Folder +
@@ -467,11 +467,11 @@ class SubPageState extends State<SubPage> {
       urlValue.text = sharedURL;
       final item = _myAya!
           .firstWhere((e) => e['ayah'] == ayaValue && e['sura'] == soraValue);
-      // print(item['tafseer']);
-      // print(item['ayahtext']);
+      // log(item['tafseer']);
+      // log(item['ayahtext']);
       tafseerValue.text = item['tafseer'];
       ayaofSuraValue.text = ayaValue;
-      //  print(ayahtextValue.text.split(" ").length);
+      //  log(ayahtextValue.text.split(" ").length);
 
 //////////SPLIT AYAH WORDS TO SHOW IN FAVORITES LIST///////////////
       ayatextLength = ayahtextValue.text.split(" ").length;
@@ -513,17 +513,17 @@ class SubPageState extends State<SubPage> {
         if (i == 0) continue;
         oneLine = i % 6;
         if (oneLine == 0) {
-          // print(tafseerLines);
+          // log(tafseerLines);
           tafseerLines!.add(oneLineString!);
-          // print(oneLineString);
+          // log(oneLineString);
           oneLineString = " ";
-          // print(tafseerSplited[i]);
+          // log(tafseerSplited[i]);
         }
       }
       tafseerLines!.add(oneLineString!);
 ////////////SPLITING ARRAY///////////////
       tafseerLines!.forEach((str) {
-        // print('${tafseerSplited.indexOf(str)}:$str');
+        // log('${tafseerSplited.indexOf(str)}:$str');
         var textEditingController = new TextEditingController(text: str);
         textEditingControllers.add(textEditingController);
         return textFields.add(new Text(
@@ -558,8 +558,8 @@ class SubPageState extends State<SubPage> {
       String soraValue = this.format(this.ayaSora!.sora!);
       final item = globals.AyaTextList.firstWhere(
           (e) => e['ayah'] == ayaValue && e['sura'] == soraValue);
-      // print(item['tafseer']);
-      // print(item['ayahtext']);
+      // log(item['tafseer']);
+      // log(item['ayahtext']);
       // tafseerValue.text = item['tafseer'];
       ayahtextValue.text = item['ayahtext'];
 
@@ -612,14 +612,14 @@ class SubPageState extends State<SubPage> {
     String jsonSora = await rootBundle.loadString("assets/data/sura_data.json");
     setState(() {
       _mySora = List<Map>.from(jsonDecode(jsonSora) as List);
-      // print("*******_mySora: $_mySora");
+      // log("*******_mySora: $_mySora");
       String soraValue = this.format(this.ayaSora!.sora!);
       int sura = int.parse(soraValue);
       final item = _mySora!.firstWhere((e) => e['sura_order'] == sura);
-      // print(item['sura_name']);
-      // print(item['ayat']);
+      // log(item['sura_name']);
+      // log(item['ayat']);
       lastAya = item['ayat'];
-      // print(lastAya);
+      // log(lastAya);
       suraNameValue.text = item['sura_name'];
     });
   }
@@ -636,15 +636,15 @@ class SubPageState extends State<SubPage> {
     // String ayaValue=this.format(this.ayaSora.aya);
     String jsonSora = await rootBundle
         .loadString("assets/data/e3rab_jsons/$currrentSora.json");
-    // print(soraValue);
-    // print(jsonSora);
+    // log(soraValue);
+    // log(jsonSora);
     earabtextFields.clear();
     earabLines.clear();
     setState(() {
       earabtextFields.clear();
       earabLines.clear();
       _myAarab = List<Map>.from(jsonDecode(jsonSora) as List);
-      // print("*******_myAarab: $_myAarab");
+      // log("*******_myAarab: $_myAarab");
       int sura = int.parse(soraValue);
       // int aya = int.parse(ayaValue);
       final item = _myAarab!
@@ -670,8 +670,8 @@ class SubPageState extends State<SubPage> {
         ///
 //////////SPLIT EARAB TO BE READ LINE BY LINE   SHOULD BE FLAG LATER
         earabSplited = aarabSuraValue.text.split(" ");
-        // print("************SPlitedArray*******$earabSplited");
-        // print(aarabSuraValue.text.split(" ").length/8);
+        // log("************SPlitedArray*******$earabSplited");
+        // log(aarabSuraValue.text.split(" ").length/8);
         // tafseerSplitedValue = tafseerValue.text.split(" ").length;
         // oneLineString
         oneLineString = " ";
@@ -681,11 +681,11 @@ class SubPageState extends State<SubPage> {
           if (i == 0) continue;
           oneLine = i % 6;
           if (oneLine == 0) {
-            // print(tafseerLines);
+            // log(tafseerLines);
             earabLines.add(oneLineString!);
-            // print(oneLineString);
+            // log(oneLineString);
             oneLineString = " ";
-            // print(earabSplited[i]);
+            // log(earabSplited[i]);
           }
         }
         ;
@@ -716,162 +716,60 @@ class SubPageState extends State<SubPage> {
   TextEditingController urlValue = new TextEditingController();
   TextEditingController shwahedValue = new TextEditingController();
   ///////////////////////////////FAVORITES///////////////////////////////////////////////////////
-  TextEditingController firstFavorite = TextEditingController();
-  TextEditingController secondFavorite = TextEditingController();
-  TextEditingController thirdFavorite = TextEditingController();
-  TextEditingController forthFavorite = TextEditingController();
-  TextEditingController fifthFavorite = TextEditingController();
-///////////////////////////////SAVING FAVORITES///////////////////////////////////////////////////////
-  saveFirstFavorite() async {
+  /// Saves the current ayah into favourite [slot] (0-based).
+  Future<void> _saveFavorite(int slot) async {
     _loadTafseerData();
-    SharedPreferences prefs = await SharedPreferences.getInstance();
-    prefs.setStringList('favorite1', [
-      currrentSora.toString(),
-      currrentAya.toString(),
-      suraNameValue.text +
-          "(" +
-          currrentAya.toString() +
-          ")-" +
-          firstWord! +
-          " " +
-          secondWord! +
-          " " +
-          thirdWord!
-    ]);
-    setState(() {
-      firstsharedFavorite = prefs.getStringList('favorite1')![2];
-      firstFavorite.text = firstsharedFavorite!;
-      Navigator.of(context).pop();
-    });
+    final label = '${suraNameValue.text}($currrentAya) '
+        '${firstWord ?? ''} ${secondWord ?? ''} ${thirdWord ?? ''}';
+    await FavoritesStore.save(slot,
+        sora: currrentSora, aya: currrentAya, label: label);
+    if (!mounted) return;
+    Navigator.of(context).pop(); // close the picker
+    Announcer.say(context, 'تمت الإضافة إلى المفضلات');
   }
 
-  saveSecondFavorite() async {
-    _loadTafseerData();
-    SharedPreferences prefs = await SharedPreferences.getInstance();
-    prefs.setStringList('favorite2', [
-      currrentSora.toString(),
-      currrentAya.toString(),
-      suraNameValue.text +
-          "(" +
-          currrentAya.toString() +
-          ")-" +
-          firstWord! +
-          " " +
-          secondWord! +
-          " " +
-          thirdWord!
-    ]);
-    setState(() {
-      secondsharedFavorite = prefs.getStringList('favorite2')![2];
-      secondFavorite.text = secondsharedFavorite!;
-      Navigator.of(context).pop();
-    });
+  Future<void> _showFavoritesPicker() async {
+    final entries = await FavoritesStore.load();
+    if (!mounted) return;
+    await showAppDialog<void>(
+      context,
+      title: 'من فضلك اختر المفضلة',
+      barrierDismissible: true,
+      content: Column(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          for (var slot = 0; slot < FavoritesStore.slots; slot++)
+            Padding(
+              padding: const EdgeInsets.only(bottom: 6),
+              child: AppButton(
+                label: FavoritesStore.labelFor(entries, slot),
+                expand: true,
+                fontSize: 18,
+                minHeight: 56,
+                autofocus: slot == 0,
+                onPressed: () => _saveFavorite(slot),
+              ),
+            ),
+        ],
+      ),
+      actions: [
+        AppButton(
+          label: 'خروج',
+          fontSize: 20,
+          minHeight: 52,
+          onPressed: () => Navigator.of(context).pop(),
+        ),
+      ],
+    );
   }
 
-  saveThirdFavorite() async {
-    _loadTafseerData();
-    SharedPreferences prefs = await SharedPreferences.getInstance();
-    prefs.setStringList('favorite3', [
-      currrentSora.toString(),
-      currrentAya.toString(),
-      suraNameValue.text +
-          "(" +
-          currrentAya.toString() +
-          ") " +
-          firstWord! +
-          " " +
-          secondWord! +
-          " " +
-          thirdWord!
-    ]);
-    setState(() {
-      thirdsharedFavorite = prefs.getStringList('favorite3')![2];
-      thirdFavorite.text = thirdsharedFavorite!;
-      Navigator.of(context).pop();
-    });
-  }
-
-  saveForthFavorite() async {
-    _loadTafseerData();
-    SharedPreferences prefs = await SharedPreferences.getInstance();
-    prefs.setStringList('favorite4', [
-      currrentSora.toString(),
-      currrentAya.toString(),
-      suraNameValue.text +
-          "(" +
-          currrentAya.toString() +
-          ") " +
-          firstWord! +
-          " " +
-          secondWord! +
-          " " +
-          thirdWord!
-    ]);
-    setState(() {
-      fourthsharedFavorite = prefs.getStringList('favorite4')![2];
-      forthFavorite.text = fourthsharedFavorite!;
-      Navigator.of(context).pop();
-    });
-  }
-
-  saveFifthFavorite() async {
-    _loadTafseerData();
-    SharedPreferences prefs = await SharedPreferences.getInstance();
-    prefs.setStringList('favorite5', [
-      currrentSora.toString(),
-      currrentAya.toString(),
-      suraNameValue.text +
-          "(" +
-          currrentAya.toString() +
-          ") " +
-          firstWord! +
-          " " +
-          secondWord! +
-          " " +
-          thirdWord!
-    ]);
-    setState(() {
-      fifthsharedFavorite = prefs.getStringList('favorite5')![2];
-      fifthFavorite.text = fifthsharedFavorite!;
-      Navigator.of(context).pop();
-    });
-  }
-
-  ///////////////////////////////GET FAVORITES///////////////////////////////////////////////////////
-  getFavorites() async {
-    SharedPreferences prefs = await SharedPreferences.getInstance();
-    if (prefs.getStringList('favorite1') == null) {
-      firstsharedFavorite = "المفضلة الأولي";
-    } else {
-      firstsharedFavorite = prefs.getStringList('favorite1')![2];
-    }
-    if (prefs.getStringList('favorite2') == null) {
-      secondsharedFavorite = "المفضلة الثانية";
-    } else {
-      secondsharedFavorite = prefs.getStringList('favorite2')![2];
-    }
-    if (prefs.getStringList('favorite3') == null) {
-      thirdsharedFavorite = "المفضلة الثالثة";
-    } else {
-      thirdsharedFavorite = prefs.getStringList('favorite3')![2];
-    }
-    if (prefs.getStringList('favorite4') == null) {
-      fourthsharedFavorite = "المفضلة الرابعة";
-    } else {
-      fourthsharedFavorite = prefs.getStringList('favorite4')![2];
-    }
-    if (prefs.getStringList('favorite5') == null) {
-      fifthsharedFavorite = "المفضلة الخامسة";
-    } else {
-      fifthsharedFavorite = prefs.getStringList('favorite5')![2];
-    }
-    setState(() {
-      firstFavorite.text = firstsharedFavorite!;
-      secondFavorite.text = secondsharedFavorite!;
-      thirdFavorite.text = thirdsharedFavorite!;
-      forthFavorite.text = fourthsharedFavorite!;
-      fifthFavorite.text = fifthsharedFavorite!;
-    });
+  void _shareAyah() {
+    final box = context.findRenderObject() as RenderBox?;
+    Share.share(
+      ayahtextValue.text + '  ' + urlValue.text,
+      sharePositionOrigin:
+          box == null ? null : box.localToGlobal(Offset.zero) & box.size,
+    );
   }
 
   String get_type(String type) {
@@ -887,7 +785,7 @@ class SubPageState extends State<SubPage> {
   List<dynamic>? shwahedText;
 
   Future _checkShwahed() async {
-    //print(ayaSora.sora);
+    //log(ayaSora.sora);
     //   setState(() async {
 //currrentAya
 //this.ayaSora.sora
@@ -896,9 +794,9 @@ class SubPageState extends State<SubPage> {
         ".json");
 
     int jsonLength = jsonShwahed.length;
-    print(jsonLength);
+    log(jsonLength);
     _myShwahed = List<Map>.from(jsonDecode(jsonShwahed) as List);
-    print(_myShwahed!.length);
+    log(_myShwahed!.length);
     // e['sura'] == currrentSora.toString() &&
     var allowed_types = [];
     for (var i = 0; i < globals.myshawahed.length; i++) {
@@ -914,23 +812,23 @@ class SubPageState extends State<SubPage> {
     if (shwahedList!.length == 0) {
       _shwahedExists = false;
     } else {
-      //      print(_myShwahed);
+      //      log(_myShwahed);
       _shwahedExists = true;
-      print(shwahedList!.length);
+      log(shwahedList!.length);
 
       shwahedValue.text = "";
       shwahedText = shwahedList!
           .map((t) => (" " + get_type(t["type"]) + ":" + t["Contents"]))
           .toList();
-      print(shwahedText);
+      log(shwahedText);
       shwahedText!.forEach((item) {
-        print(item);
+        log(item);
         shwahedValue.text += "\r\n " + item;
       });
       //  shwahedValue.text = shwahedText.toString();
-      // //  print(shwahedList["Contents"]);
-      // //  print(item["Contents"]);
-      // //  print(item["Name"]);
+      // //  log(shwahedList["Contents"]);
+      // //  log(item["Contents"]);
+      // //  log(item["Name"]);
       //    _shwahedExists = true;
     }
     //});
@@ -1027,6 +925,7 @@ class SubPageState extends State<SubPage> {
   }
 
 ///////////////////////////////START OF MAIN///////////////////////////////////////////////////////
+  @override
   Widget build(BuildContext context) {
     RouteSettings settings = ModalRoute.of(context)!.settings;
     ayaSora = settings.arguments as AyaSoraNumber?;
@@ -1037,1508 +936,137 @@ class SubPageState extends State<SubPage> {
       if (currrentAya == 0) {
         currrentAya = 1;
       }
-
-      //  _checkShwahed();
       return globals.GlobalUI().getLoadingContent();
     }
     if (!data_ready) return globals.GlobalUI().getLoadingContent();
-    // setPlayUrl();
-    return Scaffold(
-        ///////////////////////////////APP BAR///////////////////////////////////////////////////////
-        appBar: AppBar(
-          leading: Padding(
-            padding: EdgeInsets.symmetric(vertical: 5.0, horizontal: 0.0),
-            child: new GestureDetector(
-              onTap: () {
+
+    return PopScope(
+      // Stop the audio whenever this screen is left (back button or gesture).
+      onPopInvokedWithResult: (didPop, result) => stop(),
+      child: AppScaffold(
+        title: 'تيسير القراءات',
+        titleSize: 20,
+        subtitle: 'سورة  ${suraNameValue.text} ( ${ayaofSuraValue.text} ) ',
+        body: SingleChildScrollView(
+          padding: const EdgeInsets.only(top: 5.0),
+          child: Column(
+            children: <Widget>[
+              audioPlayerQ.player_buttons(MediaQuery.of(context)),
+              AppButtonWrap(
+                children: <Widget>[
+                  AppButton(
+                    label: 'التالي',
+                    fontSize: 20.0,
+                    minHeight: 80,
+                    bold: true,
+                    onPressed: playNext,
+                  ),
+                  AppButton(
+                    label: 'السابق',
+                    fontSize: 20.0,
+                    minHeight: 80,
+                    bold: true,
+                    onPressed: playPrevoius,
+                  ),
+                  if (_tayseerExist)
+                    AppButton(
+                      label: 'التيسير المعلم',
+                      onPressed: () => tayseerElmoalem(introTndex!),
+                    ),
+                  if (_gamaaExists)
+                    AppButton(
+                      label: 'كيفية الجمع',
+                      onPressed: () => elgamaa(introTndex!),
+                    ),
+                  if (_introExists)
+                    AppButton(
+                      label: 'تقدمة - ص',
+                      onPressed: () => osoolNumber(introTndex!),
+                    ),
+                  if (_introKExists)
+                    AppButton(
+                      label: 'تقدمة - ك',
+                      onPressed: () => osoolNumberK(introTndex!),
+                    ),
+                  if (_shwahedExists)
+                    AppButton(
+                      label: 'الشواهد',
+                      onPressed: () => showTextActionsDialog(context,
+                          title: 'الشواهد', source: shwahedValue),
+                    ),
+                  AppButton(
+                    label: 'نص الآية',
+                    onPressed: () {
+                      _loadAyaText();
+                      showTextActionsDialog(context,
+                          title: 'نص الآية', source: ayahtextValue);
+                    },
+                  ),
+                  AppButton(
+                    label: 'استماع متواصل',
+                    onPressed: continuePlaying,
+                  ),
+                  AppButton(
+                    label: 'الإعراب',
+                    fontSize: 26,
+                    onPressed: () {
+                      _loadAarabData();
+                      showTextActionsDialog(context,
+                          title: 'الإعراب', source: aarabSuraValue);
+                    },
+                  ),
+                  AppButton(
+                    label: 'التفسير',
+                    fontSize: 26,
+                    onPressed: () {
+                      _loadTafseerData();
+                      showTextActionsDialog(context,
+                          title: 'التفسير', source: tafseerValue);
+                    },
+                  ),
+                  AppButton(
+                    label: 'إضافة إلى المفضلات',
+                    fontSize: 20,
+                    onPressed: _showFavoritesPicker,
+                  ),
+                  AppButton(
+                    label: 'مشاركة',
+                    onPressed: _shareAyah,
+                  ),
+                ],
+              ),
+            ],
+          ),
+        ),
+        bottomBar: AppBottomBar(
+          children: [
+            TyseerButton(
+              buttonHeight: 70,
+              text: 'المفضلات',
+              onPressed: () {
                 stop();
-                Navigator.of(context).pop();
+                Navigator.pushNamed(context, 'favorites');
               },
-              child: Text("الرجوع",
-                  style: TextStyle(fontSize: 16.0, color: Colors.brown[100])),
             ),
-          ),
-          centerTitle: true,
-          backgroundColor: Color(0xff22160B),
-          title: Text("تيسيرالقراءات",
-              style: TextStyle(color: Colors.brown[100], fontSize: 20.0)),
-          bottom: PreferredSize(
-            child: Text(
-                "سورة  " +
-                    suraNameValue.text +
-                    " ( " +
-                    ayaofSuraValue.text +
-                    " ) ",
-                style: TextStyle(color: Colors.brown[100], fontSize: 17.0)),
-            preferredSize: Size.fromHeight(15),
-          ),
+            TyseerButton(
+              buttonHeight: 70,
+              text: 'الإعدادات',
+              onPressed: () {
+                stop();
+                Navigator.pushNamed(context, 'settings');
+              },
+            ),
+            TyseerButton(
+              buttonHeight: 70,
+              text: 'الرئيسية',
+              onPressed: () {
+                stop();
+                Navigator.pushNamed(context, 'Home');
+              },
+            ),
+          ],
         ),
-        body: WillPopScope(
-          onWillPop: () {
-            stop();
-            Navigator.of(context).pop();
-            return Future.value(true);
-          },
-          child: Container(
-            height: MediaQuery.of(context).size.height,
-            decoration: BoxDecoration(
-              color: Color(0xff22160B),
-              image: DecorationImage(
-                image: AssetImage("assets/images/islam.png"),
-                fit: BoxFit.cover,
-              ),
-            ),
-            child: SingleChildScrollView(
-              padding: EdgeInsets.only(top: 5.0),
-              child: Wrap(
-                spacing: 0.0, // gap between adjacent chips
-                runSpacing: 4.0, // gap between lines
-                alignment: WrapAlignment.spaceEvenly,
-                children: <Widget>[
-//////////////////////////BUTTON (PLAY)//////////////////////////////
-                  audioPlayerQ.player_buttons(MediaQuery.of(context)),
-
-//////////////////////////BUTTON (NEXT)//////////////////////////////
-                  Container(
-                    decoration: BoxDecoration(
-                      color: Colors.brown[200],
-                    ),
-                    child: new ButtonTheme(
-                      height: 80.0,
-                      minWidth: MediaQuery.of(context).size.width / 2.05,
-                      child: OutlinedButton(
-                        onPressed: () {
-                          // _loadAarabData();
-                          playNext();
-                        },
-                             style: OutlinedButton.styleFrom( 
-                      side: BorderSide(
-                      color: Color(0xff22160B), //Color of the border
-                      style: BorderStyle.solid, //Style of the border
-                      width: 0.8, //width of the border
-                      
-                    ),
-                    foregroundColor : Colors.brown[100], // Text Color
-                   backgroundColor: Color(0xff22160B), 
-                    //splashColor: Colors.grey,
-                    shape: RoundedRectangleBorder(
-              borderRadius: BorderRadius.zero, // Sharp corners
-            ),
-                  ),
-                        child: Text("التالي",
-                            style: TextStyle(
-                                fontSize: 20.0, fontWeight: FontWeight.bold)),
-                       
-                      ),
-                    ),
-                  ),
-///////////////////////BUTTON (PREVIOUS)////////////////////////////////
-                  Container(
-                    decoration: new BoxDecoration(
-                      color: Colors.brown[200],
-                    ),
-                    child: new ButtonTheme(
-                      height: 80.0,
-                      minWidth: MediaQuery.of(context).size.width / 2.05,
-                      child: OutlinedButton(
-                        onPressed: () {
-                          // _loadAarabData();
-                          playPrevoius();
-                        },
-                              style: OutlinedButton.styleFrom( 
-                      side: BorderSide(
-                      color: Color(0xff22160B), //Color of the border
-                      style: BorderStyle.solid, //Style of the border
-                      width: 0.8, //width of the border
-                    ),
-                    foregroundColor : Colors.brown[100], // Text Color
-                   backgroundColor: Color(0xff22160B), 
-                    //splashColor: Colors.grey,
-                    shape: RoundedRectangleBorder(
-              borderRadius: BorderRadius.zero, // Sharp corners
-            ),
-                  ),
-                        child: Text("السابق",
-                            style: TextStyle(
-                                fontSize: 20.0, fontWeight: FontWeight.bold)),
-                       
-                      ),
-                    ),
-                  ),
-
-                  ///////////////////////////////ELTAYSEER ELMO3ALEM///////////////////////////////////////////////////////
-                  Visibility(
-                    maintainSize: false,
-                    maintainAnimation: false,
-                    maintainState: false,
-                    visible: _tayseerExist,
-                    child: Container(
-                      padding: EdgeInsets.only(left: 5.0),
-                      child: new ButtonTheme(
-                        height: 70.0,
-                        minWidth: MediaQuery.of(context).size.width / 2.1,
-                        child: ElevatedButton(
-                          onPressed: () {
-                            tayseerElmoalem(introTndex!);
-                          },
-                          child: Text("التيسير المعلم",
-                              style: TextStyle(
-                                fontSize: 23.0,
-                              )),
-                              style: OutlinedButton.styleFrom( 
-                     
-                    foregroundColor : Colors.brown[100], // Text Color
-                   backgroundColor: Color(0xff22160B), 
-                    //splashColor: Colors.grey,
-                    shape: RoundedRectangleBorder(
-              borderRadius: BorderRadius.zero, // Sharp corners
-            ),
-                  ),
-                        ),
-                      ),
-                    ),
-                  ),
-
-                  ///////////////////////////////ELGAMAA3///////////////////////////////////////////////////////
-                  Visibility(
-                    maintainSize: false,
-                    maintainAnimation: false,
-                    maintainState: false,
-                    visible: _gamaaExists,
-                    child: Container(
-                      padding: EdgeInsets.only(left: 5.0),
-                      child: new ButtonTheme(
-                        height: 70.0,
-                        minWidth: MediaQuery.of(context).size.width / 2.1,
-                        child: ElevatedButton(
-                          onPressed: () {
-                            elgamaa(introTndex!);
-                          },
-                          child: Text("كيفية الجمع",
-                              style: TextStyle(
-                                fontSize: 23.0,
-                              )),
-                                style: OutlinedButton.styleFrom( 
-                      
-                    foregroundColor : Colors.brown[100], // Text Color
-                   backgroundColor: Color(0xff22160B), 
-                    //splashColor: Colors.grey,
-                    shape: RoundedRectangleBorder(
-              borderRadius: BorderRadius.zero, // Sharp corners
-            ),
-                  ),
-                        ),
-                      ),
-                    ),
-                  ),
-
-                  ///////////////////////////////INTRO SOGHRA///////////////////////////////////////////////////////
-                  Visibility(
-                    maintainSize: false,
-                    maintainAnimation: false,
-                    maintainState: false,
-                    visible: _introExists,
-                    child: Container(
-                      child: new ButtonTheme(
-                        height: 70.0,
-                        minWidth: MediaQuery.of(context).size.width / 2.1,
-                        child: ElevatedButton(
-                          onPressed: () {
-                            osoolNumber(introTndex!);
-                          },
-                          child: Text("تقدمة - ص",
-                              style: TextStyle(
-                                fontSize: 23.0,
-                              )),
-                     style: OutlinedButton.styleFrom( 
-                      
-                    foregroundColor : Colors.brown[100], // Text Color
-                   backgroundColor: Color(0xff22160B), 
-                    //splashColor: Colors.grey,
-                    shape: RoundedRectangleBorder(
-              borderRadius: BorderRadius.zero, // Sharp corners
-            ),
-                  ),
-                        ),
-                      ),
-                    ),
-                  ),
-
-                  ///////////////////////////////INTRO KOBRA///////////////////////////////////////////////////////
-                  Visibility(
-                    maintainSize: false,
-                    maintainAnimation: false,
-                    maintainState: false,
-                    visible: _introKExists,
-                    child: Container(
-                      child: new ButtonTheme(
-                        height: 70.0,
-                        minWidth: MediaQuery.of(context).size.width / 2.1,
-                        child: ElevatedButton(
-                          onPressed: () {
-                            osoolNumberK(introTndex!);
-                          },
-                          child: Text("تقدمة - ك",
-                              style: TextStyle(
-                                fontSize: 23.0,
-                              )),
-                               style: OutlinedButton.styleFrom( 
-                      
-                    foregroundColor : Colors.brown[100], // Text Color
-                   backgroundColor: Color(0xff22160B), 
-                    //splashColor: Colors.grey,
-                    shape: RoundedRectangleBorder(
-              borderRadius: BorderRadius.zero, // Sharp corners
-            ),
-                  ),
-                        ),
-                      ),
-                    ),
-                  ),
-
-///////////////////////////////SHWAHED///////////////////////////////////////////////////////
-                  Visibility(
-                    maintainSize: false,
-                    maintainAnimation: false,
-                    maintainState: false,
-                    visible: _shwahedExists,
-                    child: Container(
-                      // padding: EdgeInsets.only(left: 2.0),
-                      child: new ButtonTheme(
-                        height: 70.0,
-                        minWidth: MediaQuery.of(context).size.width / 2.1,
-                        child: ElevatedButton(
-                          onPressed: () {
-                            showDialog<bool>(
-                                context: context,
-                                barrierDismissible: false,
-                                builder: (BuildContext context) {
-                                  return AlertDialog(
-//////////////////POPUP CONTAINER TEXT FIELD (نص الشواهد)///////////////
-                                    content: Container(
-                                      child: SingleChildScrollView(
-                                        scrollDirection: Axis.vertical,
-                                        child: Column(
-                                            // children: ayahtextFields,
-                                            children: [
-                                              Text(
-                                                shwahedValue.text,
-                                                style: TextStyle(
-                                                    color: Color(0xff22160B),
-                                                    fontWeight: FontWeight.bold,
-                                                    fontSize: 20.0),
-                                                textAlign: TextAlign.right,
-                                              ),
-                                            ]),
-                                      ),
-                                    ),
-                                    actions: <Widget>[
-                                      //////////// ACTIONS FOR SHWAHED
-///////////SHARE BUTTON//////////////////
-                                      new ButtonTheme(
-                                        height: 50.0,
-                                        minWidth:
-                                            MediaQuery.of(context).size.width /
-                                                5,
-                                        child: ElevatedButton(
-                                          onPressed: () {
-                                            final RenderBox box =
-                                                context.findRenderObject()
-                                                    as RenderBox;
-                                            Share.share(shwahedValue.text,
-                                                // subject: subject,
-                                                sharePositionOrigin:
-                                                    box.localToGlobal(
-                                                            Offset.zero) &
-                                                        box.size);
-                                          },
-                                          child: Text("مشاركة",
-                                              style: TextStyle(fontSize: 23.0)),
-                                                 style: OutlinedButton.styleFrom( 
-                       
-                    foregroundColor : Colors.brown[100], // Text Color
-                   backgroundColor: Color(0xff22160B), 
-                    //splashColor: Colors.grey,
-                    shape: RoundedRectangleBorder(
-              borderRadius: BorderRadius.zero, // Sharp corners
-            ),
-                  ),
-                                        ),
-                                      ),
-///////////COPY BUTTON//////////////////
-                                      new ButtonTheme(
-                                        height: 50.0,
-                                        minWidth:
-                                            MediaQuery.of(context).size.width /
-                                                4.2,
-                                        child: ElevatedButton(
-                                          onPressed: () {
-                                            Clipboard.setData(new ClipboardData(
-                                                text: shwahedValue.text));
-                                            showDialog<bool>(
-                                                context: context,
-                                                barrierDismissible: false,
-                                                builder:
-                                                    (BuildContext context) {
-                                                  return AlertDialog(
-                                                    title: Text("تم النسخ",
-                                                        style: TextStyle(
-                                                          fontSize: 26.0,
-                                                        ),
-                                                        textAlign:
-                                                            TextAlign.center),
-                                                    content: Container(
-                                                        child:
-                                                            SingleChildScrollView(
-                                                      scrollDirection:
-                                                          Axis.vertical,
-                                                      // child:Text("تم النسخ",style: TextStyle(fontSize: 23.0,fontWeight: FontWeight.bold),textAlign: TextAlign.center,),
-                                                    )),
-                                                    actions: <Widget>[
-                                                      new ButtonTheme(
-                                                        height: 60.0,
-                                                        minWidth: MediaQuery.of(
-                                                                    context)
-                                                                .size
-                                                                .width /
-                                                            1.5,
-                                                        child: ElevatedButton(
-                                                          onPressed: () {
-                                                            Navigator.of(
-                                                                    context)
-                                                                .pop();
-                                                          },
-                                                          child: Text("رجوع",
-                                                              style: TextStyle(
-                                                                  fontSize:
-                                                                      23.0)),
-                                                              style: OutlinedButton.styleFrom( 
-                      
-                    foregroundColor : Colors.brown[100], // Text Color
-                   backgroundColor: Color(0xff22160B), 
-                    //splashColor: Colors.grey,
-                    shape: RoundedRectangleBorder(
-              borderRadius: BorderRadius.zero, // Sharp corners
-            ),
-                  ),
-                                                        ),
-                                                      ),
-                                                    ],
-                                                  );
-                                                });
-                                          },
-                                          child: Text("نسخ",
-                                              style: TextStyle(fontSize: 23.0)),
-                                                style: OutlinedButton.styleFrom( 
-                       
-                    foregroundColor : Colors.brown[100], // Text Color
-                   backgroundColor: Color(0xff22160B), 
-                    //splashColor: Colors.grey,
-                    shape: RoundedRectangleBorder(
-              borderRadius: BorderRadius.zero, // Sharp corners
-            ),
-                  ),
-                                        ),
-                                      ),
-                                      new ButtonTheme(
-                                        height: 50.0,
-                                        minWidth:
-                                            MediaQuery.of(context).size.width /
-                                                5,
-                                        child: ElevatedButton(
-                                          onPressed: () {
-                                            Navigator.of(context).pop();
-                                          },
-                                          child: Text("خروج",
-                                              style: TextStyle(fontSize: 23.0)),
-                                                 style: OutlinedButton.styleFrom( 
-                      
-                    foregroundColor : Colors.brown[100], // Text Color
-                   backgroundColor: Color(0xff22160B), 
-                    //splashColor: Colors.grey,
-                    shape: RoundedRectangleBorder(
-              borderRadius: BorderRadius.zero, // Sharp corners
-            ),
-                  ),
-                                        ),
-                                      ),
-                                    ],
-                                  );
-                                });
-                          },
-                          child: Text("الشواهد",
-                              style: TextStyle(
-                                fontSize: 23.0,
-                              )),
-                               style: OutlinedButton.styleFrom( 
-                       
-                    foregroundColor : Colors.brown[100], // Text Color
-                   backgroundColor: Color(0xff22160B), 
-                    //splashColor: Colors.grey,
-                    shape: RoundedRectangleBorder(
-              borderRadius: BorderRadius.zero, // Sharp corners
-            ),
-                  ),
-                        ),
-                      ),
-                    ),
-                  ),
-
-                  ///////////////////////////////TEXT OF AYA///////////////////////////////////////////////////////
-                  Container(
-                    // padding: EdgeInsets.only(left: 25.0),
-                    child: new ButtonTheme(
-                      height: 70.0,
-                      minWidth: MediaQuery.of(context).size.width / 2.1,
-                      child: ElevatedButton(
-                        onPressed: () {
-                          // _loadTafseerData();
-                          _loadAyaText();
-
-                          showDialog<bool>(
-                              context: context,
-                              barrierDismissible: false,
-                              builder: (BuildContext context) {
-                                return AlertDialog(
-                                  title: Text("نص الآية",
-                                      style: TextStyle(
-                                        fontSize: 26.0,
-                                      ),
-                                      textAlign: TextAlign.center),
-//////////////////POPUP CONTAINER TEXT FIELD (نص الآية)///////////////
-                                  content: Container(
-                                    child: SingleChildScrollView(
-                                      scrollDirection: Axis.vertical,
-                                      child: Column(
-                                        children:
-                                            ayahtextFields as List<Widget>,
-                                        //     children: [
-                                        //         Text(ayahtextValue.text,
-                                        //         style: TextStyle(color: Color(0xff22160B),fontWeight: FontWeight.bold,fontSize: 20.0),
-                                        //         textAlign: TextAlign.right,
-                                        //     ),
-                                        // ]
-                                      ),
-                                    ),
-                                  ),
-                                  actions: <Widget>[
-                                    new ButtonTheme(
-                                      height: 50.0,
-                                      minWidth:
-                                          MediaQuery.of(context).size.width / 5,
-                                      child: ElevatedButton(
-                                        onPressed: () {
-                                          // shareUrl();
-                                          final RenderBox box = context
-                                              .findRenderObject() as RenderBox;
-                                          Share.share(ayahtextValue.text,
-                                              // subject: subject,
-                                              sharePositionOrigin:
-                                                  box.localToGlobal(
-                                                          Offset.zero) &
-                                                      box.size);
-                                        },
-                                        child: Text("مشاركة",
-                                            style: TextStyle(fontSize: 23.0)),
-                                                style: OutlinedButton.styleFrom( 
-                       
-                    foregroundColor : Colors.brown[100], // Text Color
-                   backgroundColor: Color(0xff22160B), 
-                    //splashColor: Colors.grey,
-                    shape: RoundedRectangleBorder(
-              borderRadius: BorderRadius.zero, // Sharp corners
-            ),
-                  ),
-                                      ),
-                                    ),
-                                    new ButtonTheme(
-                                      height: 50.0,
-                                      minWidth:
-                                          MediaQuery.of(context).size.width / 5,
-                                      child: ElevatedButton(
-                                        onPressed: () {
-                                          Clipboard.setData(new ClipboardData(
-                                              text: ayahtextValue.text));
-                                          showDialog<bool>(
-                                              context: context,
-                                              barrierDismissible: false,
-                                              builder: (BuildContext context) {
-                                                return AlertDialog(
-                                                  title: Text("تم النسخ",
-                                                      style: TextStyle(
-                                                        fontSize: 26.0,
-                                                      ),
-                                                      textAlign:
-                                                          TextAlign.center),
-                                                  content: Container(
-                                                      child:
-                                                          SingleChildScrollView(
-                                                    scrollDirection:
-                                                        Axis.vertical,
-                                                    // child:Text("تم النسخ",style: TextStyle(fontSize: 23.0,fontWeight: FontWeight.bold),textAlign: TextAlign.center,),
-                                                  )),
-                                                  actions: <Widget>[
-                                                    new ButtonTheme(
-                                                      height: 60.0,
-                                                      minWidth:
-                                                          MediaQuery.of(context)
-                                                                  .size
-                                                                  .width /
-                                                              1.5,
-                                                      child: ElevatedButton(
-                                                        onPressed: () {
-                                                          Navigator.of(context)
-                                                              .pop();
-                                                        },
-                                                        child: Text("رجوع",
-                                                            style: TextStyle(
-                                                                fontSize:
-                                                                    23.0)),
-                                                                 style: OutlinedButton.styleFrom( 
-                      
-                    foregroundColor : Colors.brown[100], // Text Color
-                   backgroundColor: Color(0xff22160B), 
-                    //splashColor: Colors.grey,
-                    shape: RoundedRectangleBorder(
-              borderRadius: BorderRadius.zero, // Sharp corners
-            ),
-                  ),
-                                                      ),
-                                                    ),
-                                                  ],
-                                                );
-                                              });
-                                        },
-                                        child: Text("نسخ",
-                                            style: TextStyle(fontSize: 23.0)),
-                                             style: OutlinedButton.styleFrom( 
-                     
-                    foregroundColor : Colors.brown[100], // Text Color
-                   backgroundColor: Color(0xff22160B), 
-                    //splashColor: Colors.grey,
-                    shape: RoundedRectangleBorder(
-              borderRadius: BorderRadius.zero, // Sharp corners
-            ),
-                  ),
-                                      ),
-                                    ),
-                                    new ButtonTheme(
-                                      height: 50.0,
-                                      minWidth:
-                                          MediaQuery.of(context).size.width / 5,
-                                      child: ElevatedButton(
-                                        onPressed: () {
-                                          Navigator.of(context).pop();
-                                        },
-                                        child: Text("خروج",
-                                            style: TextStyle(fontSize: 23.0)),
-                                                style: OutlinedButton.styleFrom( 
-                      
-                    foregroundColor : Colors.brown[100], // Text Color
-                   backgroundColor: Color(0xff22160B), 
-                    //splashColor: Colors.grey,
-                    shape: RoundedRectangleBorder(
-              borderRadius: BorderRadius.zero, // Sharp corners
-            ),
-                  ),
-                                      ),
-                                    ),
-                                  ],
-                                );
-                              });
-                        },
-                        child: Text("نص الآية",
-                            style: TextStyle(
-                              fontSize: 23.0,
-                            )),
-                             style: OutlinedButton.styleFrom( 
-                      
-                    foregroundColor : Colors.brown[100], // Text Color
-                   backgroundColor: Color(0xff22160B), 
-                    //splashColor: Colors.grey,
-                    shape: RoundedRectangleBorder(
-              borderRadius: BorderRadius.zero, // Sharp corners
-            ),
-                  ),
-                      ),
-                    ),
-                  ),
-
-///////////////////////////////CONTINUES LISTENING///////////////////////////////////////////////////////
-                  Container(
-                    // padding: EdgeInsets.only(top: 25.0),
-                    child: new ButtonTheme(
-                      height: 70.0,
-                      minWidth: MediaQuery.of(context).size.width / 2.1,
-                      child: ElevatedButton(
-                        onPressed: () {
-                          continuePlaying();
-                        },
-                        child: Text("استماع متواصل",
-                            style: TextStyle(
-                              fontSize: 23.0,
-                            )),
-                            style: OutlinedButton.styleFrom( 
-                      
-                    foregroundColor : Colors.brown[100], // Text Color
-                   backgroundColor: Color(0xff22160B), 
-                    //splashColor: Colors.grey,
-                    shape: RoundedRectangleBorder(
-              borderRadius: BorderRadius.zero, // Sharp corners
-            ),
-                  ),
-                      ),
-                    ),
-                  ),
-///////////////////////////////BUTTON (الأعراب)///////////////////////////////////////////////////////
-                  Container(
-                    child: new ButtonTheme(
-                      height: 70.0,
-                      minWidth: MediaQuery.of(context).size.width / 2.1,
-                      child: ElevatedButton(
-                        onPressed: () {
-                          _loadAarabData();
-                          showDialog<bool>(
-                              context: context,
-                              barrierDismissible: false,
-                              builder: (BuildContext context) {
-                                return AlertDialog(
-                                  title: Text("الإعراب",
-                                      style: TextStyle(
-                                        fontSize: 26.0,
-                                      ),
-                                      textAlign: TextAlign.center),
-//////////////////POPUP CONTAINER TEXT FIELD (الأعراب)///////////////
-                                  content: Container(
-                                    child: SingleChildScrollView(
-                                      scrollDirection: Axis.vertical,
-                                      child: Column(
-                                        children:
-                                            earabtextFields as List<Widget>,
-                                        //     children: [
-                                        //             Text(aarabSuraValue.text,
-                                        //         style: TextStyle(color: Color(0xff22160B),fontWeight: FontWeight.bold,fontSize: 20.0),
-                                        //         textAlign: TextAlign.right,
-                                        //        ),
-                                        // ]
-                                      ),
-                                    ),
-                                  ),
-                                  actions: <Widget>[
-///////////SHARE BUTTON//////////////////
-                                    new ButtonTheme(
-                                      height: 40.0,
-                                      minWidth:
-                                          MediaQuery.of(context).size.width / 5,
-                                      child: ElevatedButton(
-                                        onPressed: () {
-                                          final RenderBox box = context
-                                              .findRenderObject() as RenderBox;
-                                          Share.share(aarabSuraValue.text,
-                                              // subject: subject,
-                                              sharePositionOrigin:
-                                                  box.localToGlobal(
-                                                          Offset.zero) &
-                                                      box.size);
-                                        },
-                                        child: Text("مشاركة",
-                                            style: TextStyle(fontSize: 23.0)),
-                                               style: OutlinedButton.styleFrom( 
-                      
-                    foregroundColor : Colors.brown[100], // Text Color
-                   backgroundColor: Color(0xff22160B), 
-                    //splashColor: Colors.grey,
-                    shape: RoundedRectangleBorder(
-              borderRadius: BorderRadius.zero, // Sharp corners
-            ),
-                  ),
-                                      ),
-                                    ),
-///////////COPY BUTTON//////////////////
-                                    new ButtonTheme(
-                                      height: 50.0,
-                                      minWidth:
-                                          MediaQuery.of(context).size.width / 5,
-                                      child: ElevatedButton(
-                                        onPressed: () {
-                                          Clipboard.setData(new ClipboardData(
-                                              text: aarabSuraValue.text));
-                                          showDialog<bool>(
-                                              context: context,
-                                              barrierDismissible: false,
-                                              builder: (BuildContext context) {
-                                                return AlertDialog(
-                                                  title: Text("تم النسخ",
-                                                      style: TextStyle(
-                                                        fontSize: 26.0,
-                                                      ),
-                                                      textAlign:
-                                                          TextAlign.center),
-                                                  content: Container(
-                                                      child:
-                                                          SingleChildScrollView(
-                                                    scrollDirection:
-                                                        Axis.vertical,
-                                                    // child:Text("تم النسخ",style: TextStyle(fontSize: 23.0,fontWeight: FontWeight.bold),textAlign: TextAlign.center,),
-                                                  )),
-                                                  actions: <Widget>[
-                                                    new ButtonTheme(
-                                                      height: 60.0,
-                                                      minWidth:
-                                                          MediaQuery.of(context)
-                                                                  .size
-                                                                  .width /
-                                                              1.5,
-                                                      child: ElevatedButton(
-                                                        onPressed: () {
-                                                          Navigator.of(context)
-                                                              .pop();
-                                                        },
-                                                        child: Text("رجوع",
-                                                            style: TextStyle(
-                                                                fontSize:
-                                                                    23.0)),
-                                                              style: OutlinedButton.styleFrom( 
-                      
-                    foregroundColor : Colors.brown[100], // Text Color
-                   backgroundColor: Color(0xff22160B), 
-                    //splashColor: Colors.grey,
-                    shape: RoundedRectangleBorder(
-              borderRadius: BorderRadius.zero, // Sharp corners
-            ),
-                  ),
-                                                      ),
-                                                    ),
-                                                  ],
-                                                );
-                                              });
-                                        },
-                                        child: Text("نسخ",
-                                            style: TextStyle(fontSize: 23.0)),
-                                             style: OutlinedButton.styleFrom( 
-                      
-                    foregroundColor : Colors.brown[100], // Text Color
-                   backgroundColor: Color(0xff22160B), 
-                    //splashColor: Colors.grey,
-                    shape: RoundedRectangleBorder(
-              borderRadius: BorderRadius.zero, // Sharp corners
-            ),
-                  ),
-                                      ),
-                                    ),
-                                    new ButtonTheme(
-                                      height: 40.0,
-                                      minWidth:
-                                          MediaQuery.of(context).size.width / 5,
-                                      child: ElevatedButton(
-                                        onPressed: () {
-                                          Navigator.of(context).pop();
-                                        },
-                                        child: Text("خروج",
-                                            style: TextStyle(fontSize: 23.0)),
-                                              style: OutlinedButton.styleFrom( 
-                    
-                    foregroundColor : Colors.brown[100], // Text Color
-                   backgroundColor: Color(0xff22160B), 
-                    //splashColor: Colors.grey,
-                    shape: RoundedRectangleBorder(
-              borderRadius: BorderRadius.zero, // Sharp corners
-            ),
-                  ),
-                                      ),
-                                    ),
-                                  ],
-                                );
-                              });
-                        },
-                        child: Text("الإعراب",
-                            style: TextStyle(
-                              fontSize: 26.0,
-                            )),
-                                style: OutlinedButton.styleFrom( 
-                       
-                    foregroundColor : Colors.brown[100], // Text Color
-                   backgroundColor: Color(0xff22160B), 
-                    //splashColor: Colors.grey,
-                    shape: RoundedRectangleBorder(
-              borderRadius: BorderRadius.zero, // Sharp corners
-            ),
-                  ),
-                      ),
-                    ),
-                  ),
-                  ///////////////////////////////TAFSEER OF AYA///////////////////////////////////////////////////////
-                  Container(
-                    child: new ButtonTheme(
-                      height: 70.0,
-                      minWidth: MediaQuery.of(context).size.width / 2.1,
-                      child: ElevatedButton(
-                        onPressed: () {
-                          _loadTafseerData();
-                          // _loadSplittedTafseer();
-                          showDialog<bool>(
-                              context: context,
-                              barrierDismissible: false,
-                              builder: (BuildContext context) {
-                                return AlertDialog(
-                                  title: Text("التفسير",
-                                      style: TextStyle(
-                                        fontSize: 26.0,
-                                      ),
-                                      textAlign: TextAlign.center),
-//////////////////POPUP CONTAINER TEXT FIELD (التفسير)///////////////
-                                  content: Container(
-                                    child: SingleChildScrollView(
-                                      scrollDirection: Axis.vertical,
-                                      child: Column(
-                                          children: textFields as List<Widget>
-                                          // children: [
-                                          //  Column(
-                                          //    mainAxisAlignment: MainAxisAlignment.center,
-                                          //    children:  textFields
-                                          //    ),
-                                          //   ElevatedButton(
-                                          // child: Text("Print Values"),
-                                          //   onPressed: (){
-                                          //   tafseerSplited.forEach((str){
-                                          //     print(textEditingControllers[str].text);
-                                          //   });
-                                          // })
-                                          // textFields,
-                                          //       Text(tafseerValue.text,
-                                          //   style: TextStyle(color: Color(0xff22160B),fontWeight: FontWeight.bold,fontSize: 20.0),
-                                          //   textAlign: TextAlign.right,
-                                          //  ),
-                                          // ]
-                                          ),
-                                    ),
-                                  ),
-                                  actions: <Widget>[
-///////////SHARE BUTTON//////////////////
-                                    new ButtonTheme(
-                                      height: 50.0,
-                                      minWidth:
-                                          MediaQuery.of(context).size.width / 5,
-                                      child: ElevatedButton(
-                                        onPressed: () {
-                                          final RenderBox box = context
-                                              .findRenderObject() as RenderBox;
-                                          Share.share(tafseerValue.text,
-                                              // subject: subject,
-                                              sharePositionOrigin:
-                                                  box.localToGlobal(
-                                                          Offset.zero) &
-                                                      box.size);
-                                        },
-                                        child: Text("مشاركة",
-                                            style: TextStyle(fontSize: 23.0)),
-                                              style: OutlinedButton.styleFrom( 
-                      
-                    foregroundColor : Colors.brown[100], // Text Color
-                   backgroundColor: Color(0xff22160B), 
-                    //splashColor: Colors.grey,
-                    shape: RoundedRectangleBorder(
-              borderRadius: BorderRadius.zero, // Sharp corners
-            ),
-                  ),
-                                      ),
-                                    ),
-///////////COPY BUTTON//////////////////
-                                    new ButtonTheme(
-                                      height: 50.0,
-                                      minWidth:
-                                          MediaQuery.of(context).size.width /
-                                              4.2,
-                                      child: ElevatedButton(
-                                        onPressed: () {
-                                          Clipboard.setData(new ClipboardData(
-                                              text: tafseerValue.text));
-                                          showDialog<bool>(
-                                              context: context,
-                                              barrierDismissible: false,
-                                              builder: (BuildContext context) {
-                                                return AlertDialog(
-                                                  title: Text("تم النسخ",
-                                                      style: TextStyle(
-                                                        fontSize: 26.0,
-                                                      ),
-                                                      textAlign:
-                                                          TextAlign.center),
-                                                  content: Container(
-                                                      child:
-                                                          SingleChildScrollView(
-                                                    scrollDirection:
-                                                        Axis.vertical,
-                                                    // child:Text("تم النسخ",style: TextStyle(fontSize: 23.0,fontWeight: FontWeight.bold),textAlign: TextAlign.center,),
-                                                  )),
-                                                  actions: <Widget>[
-                                                    new ButtonTheme(
-                                                      height: 60.0,
-                                                      minWidth:
-                                                          MediaQuery.of(context)
-                                                                  .size
-                                                                  .width /
-                                                              1.5,
-                                                      child: ElevatedButton(
-                                                        onPressed: () {
-                                                          Navigator.of(context)
-                                                              .pop();
-                                                        },
-                                                        child: Text("رجوع",
-                                                            style: TextStyle(
-                                                                fontSize:
-                                                                    23.0)),
-                                                                style: OutlinedButton.styleFrom( 
-                       
-                    foregroundColor : Colors.brown[100], // Text Color
-                   backgroundColor: Color(0xff22160B), 
-                    //splashColor: Colors.grey,
-                    shape: RoundedRectangleBorder(
-              borderRadius: BorderRadius.zero, // Sharp corners
-            ),
-                  ),
-                                                      ),
-                                                    ),
-                                                  ],
-                                                );
-                                              });
-                                        },
-                                        child: Text("نسخ",
-                                            style: TextStyle(fontSize: 23.0)),
-                                              style: OutlinedButton.styleFrom( 
-                      
-                    foregroundColor : Colors.brown[100], // Text Color
-                   backgroundColor: Color(0xff22160B), 
-                    //splashColor: Colors.grey,
-                    shape: RoundedRectangleBorder(
-              borderRadius: BorderRadius.zero, // Sharp corners
-            ),
-                  ),
-                                      ),
-                                    ),
-                                    new ButtonTheme(
-                                      height: 50.0,
-                                      minWidth:
-                                          MediaQuery.of(context).size.width / 5,
-                                      child: ElevatedButton(
-                                        onPressed: () {
-                                          Navigator.of(context).pop();
-                                        },
-                                        child: Text("خروج",
-                                            style: TextStyle(fontSize: 23.0)),
-                                               style: OutlinedButton.styleFrom( 
-                      
-                    foregroundColor : Colors.brown[100], // Text Color
-                   backgroundColor: Color(0xff22160B), 
-                    //splashColor: Colors.grey,
-                    shape: RoundedRectangleBorder(
-              borderRadius: BorderRadius.zero, // Sharp corners
-            ),
-                  ),
-                                      ),
-                                    ),
-                                  ],
-                                );
-                              });
-                        },
-                        child: Text("التفسير",
-                            style: TextStyle(
-                              fontSize: 26.0,
-                            )),
-                               style: OutlinedButton.styleFrom( 
-                      
-                    foregroundColor : Colors.brown[100], // Text Color
-                   backgroundColor: Color(0xff22160B), 
-                    //splashColor: Colors.grey,
-                    shape: RoundedRectangleBorder(
-              borderRadius: BorderRadius.zero, // Sharp corners
-            ),
-                  ),
-                      ),
-                    ),
-                  ),
-///////////////////////////////FAVORITES///////////////////////////////////////////////////////
-                  Container(
-                    child: new ButtonTheme(
-                      height: 70.0,
-                      minWidth: MediaQuery.of(context).size.width / 2.1,
-                      child: ElevatedButton(
-                        onPressed: () {
-                          getFavorites();
-                          showDialog(
-                            context: context,
-                            builder: (BuildContext context) {
-                              return AlertDialog(
-                                content: Container(
-                                  height:
-                                      MediaQuery.of(context).size.height / 1.5,
-                                  child: SingleChildScrollView(
-                                    child: Wrap(
-                                        spacing:
-                                            10.0, // gap between adjacent chips
-                                        runSpacing: 4.0, // gap between lines
-                                        children: <Widget>[
-                                          Column(
-                                            children: <Widget>[
-///////////////////////////////HEADER OF FAVORITES//////////////////////////////////////////////////////
-                                              Container(
-                                                width: MediaQuery.of(context)
-                                                    .size
-                                                    .width,
-                                                decoration: BoxDecoration(
-                                                  border: Border(
-                                                    bottom: BorderSide(
-                                                      color: Colors.grey,
-                                                      width: 2.0,
-                                                    ),
-                                                  ),
-                                                ),
-                                                child: Text(
-                                                    'من فضلك اختر المفضلة',
-                                                    textAlign: TextAlign.center,
-                                                    style: TextStyle(
-                                                      fontSize: 23.0,
-                                                    )),
-                                              ),
-///////////////////////////////FIRST FAVORITES//////////////////////////////////////////////////////
-                                              Container(
-                                                width: MediaQuery.of(context)
-                                                    .size
-                                                    .width,
-                                                child: Padding(
-                                                  padding: EdgeInsets.only(
-                                                      bottom: 5.0, top: 6.0),
-                                                  child: Row(
-                                                    mainAxisAlignment:
-                                                        MainAxisAlignment
-                                                            .center,
-                                                    children: <Widget>[
-                                                      new ButtonTheme(
-                                                        height: MediaQuery.of(
-                                                                    context)
-                                                                .size
-                                                                .height /
-                                                            11,
-                                                        minWidth: MediaQuery.of(
-                                                                    context)
-                                                                .size
-                                                                .width /
-                                                            2,
-                                                        child: ElevatedButton(
-                                                          onPressed: () {
-                                                            saveFirstFavorite();
-                                                          },
-                                                          child: Text(
-                                                              firstFavorite
-                                                                  .text,
-                                                              textAlign:
-                                                                  TextAlign
-                                                                      .right,
-                                                              style: TextStyle(
-                                                                fontSize: 18.0,
-                                                              )),
-                                                               style: OutlinedButton.styleFrom( 
-                   
-                    foregroundColor : Colors.brown[100], // Text Color
-                   backgroundColor: Color(0xff22160B), 
-                    //splashColor: Colors.grey,
-                    shape: RoundedRectangleBorder(
-              borderRadius: BorderRadius.zero, // Sharp corners
-            ),
-                  ),
-                                                        ),
-                                                      ),
-                                                    ],
-                                                  ),
-                                                ),
-                                              ),
-///////////////////////////////SECOND FAVORITES//////////////////////////////////////////////////////
-                                              Container(
-                                                width: MediaQuery.of(context)
-                                                    .size
-                                                    .width,
-                                                child: Padding(
-                                                  padding: EdgeInsets.only(
-                                                      bottom: 5.0),
-                                                  child: Row(
-                                                    mainAxisAlignment:
-                                                        MainAxisAlignment
-                                                            .center,
-                                                    children: <Widget>[
-                                                      new ButtonTheme(
-                                                        height: MediaQuery.of(
-                                                                    context)
-                                                                .size
-                                                                .height /
-                                                            11,
-                                                        minWidth: MediaQuery.of(
-                                                                    context)
-                                                                .size
-                                                                .width /
-                                                            2,
-                                                        child: ElevatedButton(
-                                                          onPressed: () {
-                                                            saveSecondFavorite();
-                                                          },
-                                                          child: Text(
-                                                              secondFavorite
-                                                                  .text,
-                                                              textAlign:
-                                                                  TextAlign
-                                                                      .right,
-                                                              style: TextStyle(
-                                                                fontSize: 18.0,
-                                                              )),
-                                                                 style: OutlinedButton.styleFrom( 
-                      
-                    foregroundColor : Colors.brown[100], // Text Color
-                   backgroundColor: Color(0xff22160B), 
-                    //splashColor: Colors.grey,
-                    shape: RoundedRectangleBorder(
-              borderRadius: BorderRadius.zero, // Sharp corners
-            ),
-                  ),
-                                                        ),
-                                                      ),
-                                                    ],
-                                                  ),
-                                                ),
-                                              ),
-///////////////////////////////THIRD FAVORITES//////////////////////////////////////////////////////
-                                              Container(
-                                                width: MediaQuery.of(context)
-                                                    .size
-                                                    .width,
-                                                child: Padding(
-                                                  padding: EdgeInsets.only(
-                                                      bottom: 5.0),
-                                                  child: Row(
-                                                    mainAxisAlignment:
-                                                        MainAxisAlignment
-                                                            .center,
-                                                    children: <Widget>[
-                                                      new ButtonTheme(
-                                                        height: MediaQuery.of(
-                                                                    context)
-                                                                .size
-                                                                .height /
-                                                            11,
-                                                        minWidth: MediaQuery.of(
-                                                                    context)
-                                                                .size
-                                                                .width /
-                                                            2,
-                                                        child: ElevatedButton(
-                                                          onPressed: () {
-                                                            saveThirdFavorite();
-                                                          },
-                                                          child: Text(
-                                                              thirdFavorite
-                                                                  .text,
-                                                              textAlign:
-                                                                  TextAlign
-                                                                      .right,
-                                                              style: TextStyle(
-                                                                fontSize: 18.0,
-                                                              )),
-                                                                style: OutlinedButton.styleFrom( 
-                    
-                    foregroundColor : Colors.brown[100], // Text Color
-                   backgroundColor: Color(0xff22160B), 
-                    //splashColor: Colors.grey,
-                    shape: RoundedRectangleBorder(
-              borderRadius: BorderRadius.zero, // Sharp corners
-            ),
-                  ),
-                                                        ),
-                                                      ),
-                                                    ],
-                                                  ),
-                                                ),
-                                              ),
-///////////////////////////////FOURTH FAVORITES//////////////////////////////////////////////////////
-                                              Container(
-                                                width: MediaQuery.of(context)
-                                                    .size
-                                                    .width,
-                                                child: Padding(
-                                                  padding: EdgeInsets.only(
-                                                      bottom: 5.0),
-                                                  child: Row(
-                                                    mainAxisAlignment:
-                                                        MainAxisAlignment
-                                                            .center,
-                                                    children: <Widget>[
-                                                      new ButtonTheme(
-                                                        height: MediaQuery.of(
-                                                                    context)
-                                                                .size
-                                                                .height /
-                                                            11,
-                                                        minWidth: MediaQuery.of(
-                                                                    context)
-                                                                .size
-                                                                .width /
-                                                            2,
-                                                        child: ElevatedButton(
-                                                          onPressed: () {
-                                                            saveForthFavorite();
-                                                          },
-                                                          child: Text(
-                                                              forthFavorite
-                                                                  .text,
-                                                              textAlign:
-                                                                  TextAlign
-                                                                      .right,
-                                                              style: TextStyle(
-                                                                fontSize: 18.0,
-                                                              )),
-                                                                 style: OutlinedButton.styleFrom( 
-                     
-                    foregroundColor : Colors.brown[100], // Text Color
-                   backgroundColor: Color(0xff22160B), 
-                    //splashColor: Colors.grey,
-                    shape: RoundedRectangleBorder(
-              borderRadius: BorderRadius.zero, // Sharp corners
-            ),
-                  ),
-                                                        ),
-                                                      ),
-                                                    ],
-                                                  ),
-                                                ),
-                                              ),
-///////////////////////////////FIFTH FAVORITES//////////////////////////////////////////////////////
-                                              Container(
-                                                width: MediaQuery.of(context)
-                                                    .size
-                                                    .width,
-                                                child: Padding(
-                                                  padding: EdgeInsets.only(
-                                                      bottom: 5.0),
-                                                  child: Row(
-                                                    mainAxisAlignment:
-                                                        MainAxisAlignment
-                                                            .center,
-                                                    children: <Widget>[
-                                                      new ButtonTheme(
-                                                        height: MediaQuery.of(
-                                                                    context)
-                                                                .size
-                                                                .height /
-                                                            11,
-                                                        minWidth: MediaQuery.of(
-                                                                    context)
-                                                                .size
-                                                                .width /
-                                                            2,
-                                                        child: ElevatedButton(
-                                                          onPressed: () {
-                                                            saveFifthFavorite();
-                                                          },
-                                                          child: Text(
-                                                              fifthFavorite
-                                                                  .text,
-                                                              textAlign:
-                                                                  TextAlign
-                                                                      .right,
-                                                              style: TextStyle(
-                                                                fontSize: 18.0,
-                                                              )),
-                                                                style: OutlinedButton.styleFrom( 
-                       
-                    foregroundColor : Colors.brown[100], // Text Color
-                   backgroundColor: Color(0xff22160B), 
-                    //splashColor: Colors.grey,
-                    shape: RoundedRectangleBorder(
-              borderRadius: BorderRadius.zero, // Sharp corners
-            ),
-                  ),
-                                                        ),
-                                                      ),
-                                                    ],
-                                                  ),
-                                                ),
-                                              ),
-///////////////////////////////EXIT BUTTON OF FAVORITES//////////////////////////////////////////////////////
-                                              Padding(
-                                                padding:
-                                                    EdgeInsets.only(top: 5.0),
-                                                child: new ButtonTheme(
-                                                  height: MediaQuery.of(context)
-                                                          .size
-                                                          .height /
-                                                      11,
-                                                  minWidth:
-                                                      MediaQuery.of(context)
-                                                              .size
-                                                              .width /
-                                                          1.5,
-                                                  child: ElevatedButton(
-                                                    onPressed: () {
-                                                      Navigator.of(context)
-                                                          .pop();
-                                                    },
-                                                    child: Text(
-                                                      "خروج",
-                                                      style: TextStyle(
-                                                          fontSize: 23.0),
-                                                    ),
-                                                        style: OutlinedButton.styleFrom( 
-                     
-                    foregroundColor : Colors.brown[100], // Text Color
-                   backgroundColor: Color(0xff22160B), 
-                    //splashColor: Colors.grey,
-                    shape: RoundedRectangleBorder(
-              borderRadius: BorderRadius.zero, // Sharp corners
-            ),
-                  ),
-                                                  ),
-                                                ),
-                                              ),
-                                            ],
-                                          ),
-                                        ]),
-                                  ),
-                                ),
-                              );
-                            },
-                          );
-///////////////////////////////ADD FAVORITES MAIN BUTTON//////////////////////////////////////////////////////
-                        },
-                        child: Text("إضافة إلى المفضلات",
-                            style: TextStyle(
-                              fontSize: 20.0,
-                            )),
-                                style: OutlinedButton.styleFrom( 
-                     
-                    foregroundColor : Colors.brown[100], // Text Color
-                   backgroundColor: Color(0xff22160B), 
-                    //splashColor: Colors.grey,
-                    shape: RoundedRectangleBorder(
-              borderRadius: BorderRadius.zero, // Sharp corners
-            ),
-                  ),
-                      ),
-                    ),
-                  ),
-///////////////////////////////SHARE URL///////////////////////////////////////////////////////
-                  Container(
-                    // padding: EdgeInsets.only(top: 25.0),
-                    child: new ButtonTheme(
-                      height: 70.0,
-                      minWidth: MediaQuery.of(context).size.width / 2.1,
-                      child: ElevatedButton(
-                        onPressed: () {
-                          final RenderBox box =
-                              context.findRenderObject() as RenderBox;
-                          Share.share(ayahtextValue.text + "  " + urlValue.text,
-                              // subject: subject,
-                              sharePositionOrigin:
-                                  box.localToGlobal(Offset.zero) & box.size);
-                        },
-                        child: Text("مشاركة",
-                            style: TextStyle(
-                              fontSize: 23.0,
-                            )),
-                                style: OutlinedButton.styleFrom( 
-                      
-                    foregroundColor : Colors.brown[100], // Text Color
-                   backgroundColor: Color(0xff22160B), 
-                    //splashColor: Colors.grey,
-                    shape: RoundedRectangleBorder(
-              borderRadius: BorderRadius.zero, // Sharp corners
-            ),
-                  ),
-                      ),
-                    ),
-                  ),
-                ],
-              ),
-            ),
-          ),
-        ),
-        /////////////////////////////////////////FOOTER//////////////////////////////////////////////
-        bottomNavigationBar: Container(
-            width: MediaQuery.of(context).size.width,
-            color: Colors.brown[100],
-            margin: const EdgeInsets.only(bottom: 2.0),
-            child: Padding(
-              padding: const EdgeInsets.all(1),
-              child: new Row(
-                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                children: <Widget>[
-//////////////////BUTTON (FAVORITES)///////////////
-                  new ButtonTheme(
-                    minWidth: MediaQuery.of(context).size.width / 3.1,
-                    height: 70.0,
-                    child: TextButton(
-                      onPressed: () {
-                        stop();
-                        Navigator.pushNamed(context, 'favorites');
-                      },
-                      child: Text("المفضلات",
-                          style: TextStyle(
-                              fontSize: 20.0, fontWeight: FontWeight.bold)),
-                             style: OutlinedButton.styleFrom( 
-                      
-                    foregroundColor : Colors.brown[100], // Text Color
-                   backgroundColor: Color(0xff22160B), 
-                    //splashColor: Colors.grey,
-                    shape: RoundedRectangleBorder(
-              borderRadius: BorderRadius.zero, // Sharp corners
-            ),
-                  ),
-                    ),
-                  ),
-//////////////////BUTTON (SETTINGS)///////////////
-                  new ButtonTheme(
-                    height: 70.0,
-                    minWidth: MediaQuery.of(context).size.width / 3.1,
-                    child: TextButton(
-                      onPressed: () {
-                        stop();
-                        Navigator.pushNamed(context, 'settings');
-                      },
-                      child: Text("الإعدادات",
-                          style: TextStyle(
-                              fontSize: 20.0, fontWeight: FontWeight.bold)),
-                             style: OutlinedButton.styleFrom( 
-                      
-                    foregroundColor : Colors.brown[100], // Text Color
-                   backgroundColor: Color(0xff22160B), 
-                    //splashColor: Colors.grey,
-                    shape: RoundedRectangleBorder(
-              borderRadius: BorderRadius.zero, // Sharp corners
-            ),
-                  ),
-                    ),
-                  ),
-//////////////////BUTTON (HOME)///////////////
-                  new ButtonTheme(
-                    // padding: const EdgeInsets.only(left:1.0),
-                    height: 70.0,
-                    minWidth: MediaQuery.of(context).size.width / 3.1,
-                    child: TextButton(
-                      onPressed: () {
-                        stop();
-                        Navigator.pushNamed(context, 'Home');
-                      },
-                      child: Text("الرئيسية",
-                          style: TextStyle(
-                              fontSize: 20.0, fontWeight: FontWeight.bold)),
-                             style: OutlinedButton.styleFrom( 
-                       
-                    foregroundColor : Colors.brown[100], // Text Color
-                   backgroundColor: Color(0xff22160B), 
-                    //splashColor: Colors.grey,
-                    shape: RoundedRectangleBorder(
-              borderRadius: BorderRadius.zero, // Sharp corners
-            ),
-                  ),
-                    ),
-                  ),
-                ],
-              ),
-            )));
+      ),
+    );
   }
 }

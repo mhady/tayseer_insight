@@ -1,10 +1,12 @@
 library tayseer_insight.globals;
 
+import 'package:tayseer_insight/utils/log.dart';
 import 'dart:io';
 import 'dart:typed_data';
 
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
+import 'package:tayseer_insight/widgets/app_button.dart';
 import 'package:flutter/services.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
@@ -46,136 +48,53 @@ class audioPlayerQuraat {
     }
   }
 
+  /// Play/pause + stop buttons and the seek slider.
   Widget player_buttons(MediaQueryData AppMediaQueryData) {
-    return SingleChildScrollView(
-        padding: EdgeInsets.only(top: 5.0),
-        child: Wrap(
-          spacing: 0.0, // gap between adjacent chips
-          runSpacing: 4.0, // gap between lines
-          alignment: WrapAlignment.spaceEvenly,
+    return SizedBox(
+      width: AppMediaQueryData.size.width,
+      child: Padding(
+        padding: const EdgeInsets.only(top: 5.0),
+        child: Column(
           children: <Widget>[
-//////////////////////////BUTTON (PLAY)//////////////////////////////
-            Container(
-              decoration: BoxDecoration(
-                color: Colors.brown[200],
-              ),
-              child: new ButtonTheme(
-                height: 80.0,
-                minWidth: AppMediaQueryData.size.width / 2.1,
-                child: OutlinedButton(
+            AppButtonWrap(
+              children: <Widget>[
+                AppButton(
+                  label: isStarted ? 'ايقاف مؤقت' : 'تشغيل',
+                  fontSize: 20.0,
+                  minHeight: 80,
+                  bold: true,
                   autofocus: true,
                   onPressed: () {
-                    if (isStarted)
+                    if (isStarted) {
                       pause();
-                    else {
-                      if (isPaused) {
-                        resume();
-                      } else {
-                        if (audio_url.length > 0)
-                          play();
-                        else {
-                          print('nothing to play ');
-                        }
-                        //PlayGoogleDriveFile(playFileId);
-                      }
+                    } else if (isPaused) {
+                      resume();
+                    } else if (audio_url.isNotEmpty) {
+                      play();
+                    } else {
+                      log('nothing to play ');
                     }
-                    this.onStateChanged();
+                    onStateChanged();
                   },
-             style: OutlinedButton.styleFrom( 
-                      side: BorderSide(
-                      color: Color(0xff22160B), //Color of the border
-                      style: BorderStyle.solid, //Style of the border
-                      width: 0.8, //width of the border
-                    ),
-                    foregroundColor : Colors.brown[100], // Text Color
-                   backgroundColor: Color(0xff22160B), 
-                    //splashColor: Colors.grey,
-                  ),
-                  child: Text((isStarted) ? "ايقاف مؤقت" : "تشغيل",
-                      style: TextStyle(
-                          fontSize: 20.0, fontWeight: FontWeight.bold)),
-                
                 ),
-              ),
-            ),
-///////////////////////BUTTON (STOP)////////////////////////////////
-            Container(
-              decoration: new BoxDecoration(
-                color: Colors.brown[200],
-              ),
-              child: ButtonTheme(
-                height: 80.0,
-                minWidth: AppMediaQueryData.size.width / 2.1,
-                child: OutlinedButton(
-                  onPressed: () {
-                    stop();
-                  },
-                    style: OutlinedButton.styleFrom( 
-                      side: BorderSide(
-                      color: Color(0xff22160B), //Color of the border
-                      style: BorderStyle.solid, //Style of the border
-                      width: 0.8, //width of the border
-                    ),
-                    foregroundColor : Colors.brown[100], // Text Color
-                   backgroundColor: Color(0xff22160B), 
-                    //splashColor: Colors.grey,
-                  ),
-                  child: Text("إيقاف",
-                      style: TextStyle(
-                          fontSize: 20.0, fontWeight: FontWeight.bold)),
-                  
+                AppButton(
+                  label: 'إيقاف',
+                  fontSize: 20.0,
+                  minHeight: 80,
+                  bold: true,
+                  onPressed: () => stop(),
                 ),
-              ),
+              ],
             ),
-///////////////////////////////SLIDER///////////////////////////////////////////////////////
-            Container(
-              width: AppMediaQueryData.size.width,
-              child: slider(),
-            )
+            slider(),
           ],
-        ));
-
-    //
-    //
-    //
-    return new ButtonTheme(
-      height: 80.0,
-      minWidth: AppMediaQueryData.size.width / 2.1,
-      child: OutlinedButton(
-        onPressed: () {
-          if (isStarted)
-            pause();
-          else {
-            if (isPaused) {
-              resume();
-            } else {
-              // PlayGoogleDriveFile(playFileId);
-              play();
-            }
-          }
-          this.onStateChanged();
-
-          ;
-        },
-         style: OutlinedButton.styleFrom( 
-                      side: BorderSide(
-                      color: Color(0xff22160B), //Color of the border
-                      style: BorderStyle.solid, //Style of the border
-                      width: 0.8, //width of the border
-                    ),
-                    foregroundColor : Colors.brown[100], // Text Color
-                   backgroundColor: Color(0xff22160B), 
-                    //splashColor: Colors.grey,
-                  ),
-        child: Text((isStarted) ? "ايقاف " : "تشغيل",
-            style: TextStyle(fontSize: 20.0, fontWeight: FontWeight.bold)),
-      
+        ),
       ),
     );
   }
 
   Widget slider() {
-    print('max is =' + this._duration.inSeconds.toString());
+    log('max is =' + this._duration.inSeconds.toString());
     return Padding(
       padding: const EdgeInsets.only(top: 40.0),
       child: Slider(
@@ -185,7 +104,7 @@ class audioPlayerQuraat {
         activeColor: Color(0xff22160B),
         inactiveColor: Color(0xff22160B),
         onChanged: (double value) {
-          print('seek the slider with value=' + value.toString());
+          log('seek the slider with value=' + value.toString());
           this._position = Duration(seconds: value.toInt());
           // setState(() {
           //   seekToSecond(value.toInt());
@@ -193,7 +112,7 @@ class audioPlayerQuraat {
           // });
         },
         onChangeEnd: (double newvalue) {
-          print('Ended change on $newvalue');
+          log('Ended change on $newvalue');
 
           Duration newDuration = Duration(seconds: newvalue.toInt());
 
@@ -209,7 +128,7 @@ class audioPlayerQuraat {
   }
 
   void onPlayerCompletion() {
-    print('onPlayerCompletion called  ');
+    log('onPlayerCompletion called  ');
     this.isStarted = false;
     isComplete = true;
     this.oncompeleted();
@@ -228,7 +147,7 @@ class audioPlayerQuraat {
   }
 
   setPlayUrl(onlineURL) {
-    print("setPlayUrl :" + onlineURL);
+    log("setPlayUrl :" + onlineURL);
     audio_url = onlineURL;
   }
 
@@ -243,7 +162,7 @@ class audioPlayerQuraat {
       webdPlayer.closePlayer();
 
       webdPlayer = (await FlutterSoundPlayer().openPlayer())!;
-      print('play...' + audio_url);
+      log('play...' + audio_url);
       if (isLocal) {
         var status = await Permission.storage.status;
         if (!status.isGranted) {
@@ -261,7 +180,7 @@ class audioPlayerQuraat {
 //           buffer,
 //           codec: Codec.mp3,
 //           whenFinished: () {
-//             // print('I hope you enjoyed listening to this song');
+//             // log('I hope you enjoyed listening to this song');
 //             onPlayerCompletion();
 //           },
 //         );
@@ -270,7 +189,7 @@ class audioPlayerQuraat {
           fromDataBuffer: buffer,
           codec: Codec.mp3,
           whenFinished: () {
-            // print('I hope you enjoyed listening to this song');
+            // log('I hope you enjoyed listening to this song');
             onPlayerCompletion();
           },
         );
@@ -280,14 +199,14 @@ class audioPlayerQuraat {
           fromURI: audio_url,
           codec: Codec.mp3,
           whenFinished: () {
-            // print('I hope you enjoyed listening to this song');
+            // log('I hope you enjoyed listening to this song');
             onPlayerCompletion();
           },
         );
         _duration = d!;
       }
 
-      print('ddddddddd _duration=' + _duration.toString());
+      log('ddddddddd _duration=' + _duration.toString());
       webdPlayer.setSubscriptionDuration(Duration(milliseconds: 300));
       webdPlayer.onProgress!.listen((e) {
         // Duration maxDuration = e.duration;
@@ -295,8 +214,8 @@ class audioPlayerQuraat {
         _position = e.position;
         this.isStarted = true;
         isComplete = false;
-        // print(' onProgress maxDuration' + maxDuration.toString());
-        // print('onProgress position' + position.toString());
+        // log(' onProgress maxDuration' + maxDuration.toString());
+        // log('onProgress position' + position.toString());
         this.onStateChanged();
       });
 
@@ -320,7 +239,7 @@ class audioPlayerQuraat {
   }
 
   Duration getDuration() {
-    // print('getDuration =' + _duration.toString());
+    // log('getDuration =' + _duration.toString());
     return _duration;
   }
 

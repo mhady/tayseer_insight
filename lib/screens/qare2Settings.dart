@@ -1,7 +1,12 @@
+import 'package:tayseer_insight/utils/log.dart';
 import 'package:flutter/material.dart';
+import 'package:tayseer_insight/widgets/app_scaffold.dart';
+import 'package:tayseer_insight/app/theme.dart';
+
 import 'dart:convert';
 import 'package:flutter/services.dart' show rootBundle;
 import 'package:tayseer_insight/globals.dart' as globals;
+import 'package:tayseer_insight/widgets/loading_view.dart';
 // import 'package:simple_permissions/simple_permissions.dart';
 import 'dart:async';
 import 'dart:io';
@@ -45,7 +50,7 @@ class Qare2SettingsState extends State<Qare2Settings> {
   //   if (permissionStatus == PermissionStatus.authorized) {
   //     setState(() {
   //       _allowWriteFile = true;
-  //       print(true);
+  //       log(true);
   //     });
   //   }
   // }
@@ -56,23 +61,23 @@ class Qare2SettingsState extends State<Qare2Settings> {
     String jsonQARE2 = await rootBundle.loadString("assets/data/switch_n.json");
     setState(() {
       _myQare2 = List<Map>.from(jsonDecode(jsonQARE2) as List);
-      print("*******_myQare2: $_myQare2");
+      log("*******_myQare2: $_myQare2");
       // List<dynamic> shikhList = new List<dynamic>.from(_myQare2);
       List<dynamic> shikhList = _myQare2!.map((t) => t["folder"]).toList();
 
       // shikhList=_myQare2.map((t) =>t["shikh"]).toList();
       if (defaultTargetPlatform == TargetPlatform.android) {
         //if (Platform.isAndroid) {
-        print(shikhList);
-        print(shikhList.length);
+        log(shikhList);
+        log(shikhList.length);
         int i = 0;
         shikhList.forEach((str) async {
           final dir = (await getExternalStorageDirectory())!.path;
-          //  print(dir);
+          //  log(dir);
           String savedPath = '$dir' + "/Tayseer/Sound/" + str;
-          print(savedPath);
+          log(savedPath);
           bool isExist = await Directory(savedPath).exists();
-          print(isExist);
+          log(isExist);
           if (isExist) {
             setState(() {
               existList.add([str, true]);
@@ -83,11 +88,11 @@ class Qare2SettingsState extends State<Qare2Settings> {
             });
           }
           i++;
-          print(existList);
+          log(existList);
         });
       }
 
-      // print( _myQare2.map((t) =>t["shikh"].toString()));
+      // log( _myQare2.map((t) =>t["shikh"].toString()));
     });
   }
 
@@ -123,95 +128,56 @@ class Qare2SettingsState extends State<Qare2Settings> {
       globals.qre2Folder = savedQare2!;
     }
 
-    print(globals.qre2Folder);
-    print(savedQare2);
+    log(globals.qre2Folder);
+    log(savedQare2);
   }
 
   @override
   Widget build(BuildContext context) {
-    if (_myQare2 == null) return new Scaffold();
-    return new Scaffold(
-      appBar: AppBar(
-        leading: Padding(
-          padding: EdgeInsets.symmetric(vertical: 10.0, horizontal: 0.0),
-          child: new GestureDetector(
-            onTap: () {
-              Navigator.of(context).pop();
-            },
-            child: Text("الرجوع",
-                style: TextStyle(fontSize: 16.0, color: Colors.brown[100])),
+    if (_myQare2 == null) return const LoadingView();
+    return AppScaffold(
+      title: 'اختر قارئ',
+      body: SingleChildScrollView(
+        child: Container(
+          // Solid card behind the list so the text never sits on the ornate pattern.
+          color: AppColors.parchment,
+          child: Column(
+            children: _myQare2!
+                .map((t) => RadioListTile<String>(
+                      autofocus: _myQare2!.indexOf(t) == 0,
+                      title: RichText(
+                        textAlign: TextAlign.start,
+                        text: TextSpan(
+                          children: <TextSpan>[
+                            TextSpan(
+                                text: checkLocal(t["folder"].toString()),
+                                style: TextStyle(
+                                    fontSize: 23.0,
+                                    fontWeight: FontWeight.bold,
+                                    color: Colors.green[900])),
+                            TextSpan(
+                                text: '${t["shikh"]} - ${t["khatma"]} - ${t["text"]}',
+                                style: TextStyle(
+                                    fontSize: 23.0,
+                                    fontWeight: FontWeight.bold,
+                                    color: Colors.brown[900])),
+                          ],
+                        ),
+                      ),
+                      groupValue: globals.qre2Folder,
+                      value: t["folder"].toString(),
+                      controlAffinity: ListTileControlAffinity.trailing,
+                      onChanged: (val) {
+                        setState(() {
+                          globals.qre2Folder = val as String;
+                          saveQare2();
+                          Navigator.of(context).pop();
+                        });
+                      },
+                      activeColor: Colors.brown[900],
+                    ))
+                .toList(),
           ),
-        ),
-        centerTitle: true,
-        backgroundColor: Color(0xff22160B),
-        title: Text("اختر قارئ",
-            style: TextStyle(
-                color: Colors.brown[100],
-                fontSize: 23.0,
-                fontWeight: FontWeight.bold)),
-      ),
-      body: Container(
-        decoration: BoxDecoration(
-          color: Color(0xff22160B),
-          image: DecorationImage(
-            image: AssetImage("assets/images/islam.png"),
-            fit: BoxFit.cover,
-          ),
-        ),
-        child: Column(
-          children: <Widget>[
-            Expanded(
-                child: SingleChildScrollView(
-              child: Column(
-                children: _myQare2!
-                    .map((t) => RadioListTile(
-                          autofocus: _myQare2!.indexOf(t) == 0 ? true : false,
-                          title: Column(
-                            // mainAxisAlignment: MainAxisAlignment.center,
-                            // crossAxisAlignment: CrossAxisAlignment.end,
-                            children: <Widget>[
-                              new RichText(
-                                textAlign: TextAlign.right,
-                                text: new TextSpan(
-                                  children: <TextSpan>[
-                                    new TextSpan(
-                                        text: this
-                                            .checkLocal(t["folder"].toString()),
-                                        style: TextStyle(
-                                            fontSize: 23.0,
-                                            fontWeight: FontWeight.bold,
-                                            color: Colors.green[900])),
-                                    new TextSpan(
-                                        text: t["shikh"].toString() +
-                                            ' - ' +
-                                            t["khatma"].toString() +
-                                            ' - ' +
-                                            t["text"].toString(),
-                                        style: TextStyle(
-                                            fontSize: 23.0,
-                                            fontWeight: FontWeight.bold,
-                                            color: Colors.brown[900])),
-                                  ],
-                                ),
-                              ),
-                            ],
-                          ),
-                          groupValue: globals.qre2Folder,
-                          value: t["folder"].toString(),
-                          controlAffinity: ListTileControlAffinity.trailing,
-                          onChanged: (val) {
-                            setState(() {
-                              globals.qre2Folder = val as String;
-                              saveQare2();
-                              Navigator.of(context).pop();
-                            });
-                          },
-                          activeColor: Colors.brown[900],
-                        ))
-                    .toList(),
-              ),
-            )),
-          ],
         ),
       ),
     );

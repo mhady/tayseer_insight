@@ -2,11 +2,10 @@ library tayseer_insight.globals;
 
 import 'dart:convert';
 
-import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
-import 'package:shared_preferences/shared_preferences.dart';
 
 import 'package:flutter/services.dart' show rootBundle;
+import 'package:tayseer_insight/widgets/loading_view.dart';
 
 // import 'package:audioplayers/audioplayers.dart';
 
@@ -25,37 +24,7 @@ List<Map> AyaTextList = [];
 // String forthFavorite = "المفضلة الرابعة";
 // String fifthFavorite = "المفضلة الخامسة";
 class GlobalUI {
-  Widget getLoadingContent() {
-    return new Container(
-        height: double.infinity,
-        width: double.infinity,
-        decoration: BoxDecoration(
-          color: Color(0xff22160B),
-          image: DecorationImage(
-            image: AssetImage("assets/images/islam.png"),
-            fit: BoxFit.cover,
-          ),
-        ),
-        child: Column(
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            Text('جاري التحميل',
-                textAlign: TextAlign.center,
-                style: TextStyle(
-                  fontSize: 24.0,
-                )),
-            Image.asset(
-              "assets/images/Loading_icon.gif",
-              alignment: Alignment.center,
-              // width: double.infinity,
-              // height: 600,
-            ),
-          ],
-        )
-        //       Image.asset("assets/cristmas.gif",width: 200,
-        // height: 200,)
-        );
-  }
+  Widget getLoadingContent() => const LoadingView();
 }
 
 class AyaSoraNumber {

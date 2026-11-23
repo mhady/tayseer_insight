@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:tayseer_insight/widgets/app_back_button.dart';
 import 'dart:convert';
 
 import 'package:flutter/services.dart'
@@ -268,19 +269,9 @@ class FarshiatFilterState extends State<FarshiatFilter> {
     return Scaffold(
 //////////////////APPBAR///////////////
         appBar: AppBar(
-          leading: Padding(
-            padding: EdgeInsets.symmetric(vertical: 10.0, horizontal: 0.0),
-            child: new GestureDetector(
-              onTap: () {
-                Navigator.of(context).pop();
-              },
-              child: Text("الرجوع",
-                  style: TextStyle(
-                      fontSize: 16.0,
-                      color: Colors.brown[100],
-                      fontWeight: FontWeight.bold)),
-            ),
-          ),
+          automaticallyImplyLeading: false,
+          leading: const AppBackButton(),
+          leadingWidth: AppBackButton.widthFor(context),
           centerTitle: true,
           backgroundColor: Color(0xff22160B),
           title: Text("الفرشيات",

@@ -1,4 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:tayseer_insight/widgets/app_scaffold.dart';
+import 'package:tayseer_insight/app/theme.dart';
+
 import 'dart:convert';
 import 'package:flutter/services.dart' show rootBundle;
 import 'package:tayseer_insight/globals.dart' as globals;
@@ -44,65 +47,35 @@ class ShwahedSettingsState extends State<ShwahedSettings> {
 
   @override
   Widget build(BuildContext context) {
-    return new Scaffold(
-      appBar: AppBar(
-        leading: Padding(
-          padding: EdgeInsets.symmetric(vertical: 10.0, horizontal: 0.0),
-          child: new GestureDetector(
-            onTap: () {
-              Navigator.of(context).pop();
-            },
-            child: Text("الرجوع",
-                style: TextStyle(fontSize: 16.0, color: Colors.brown[100])),
+    return AppScaffold(
+      title: 'اختر الشواهد',
+      body: SingleChildScrollView(
+        child: Container(
+          color: AppColors.parchment,
+          child: Column(
+            children: globals.myshawahed
+                .map((t) => CheckboxListTile(
+                      autofocus: globals.myshawahed.indexOf(t) == 0,
+                      title: Text(
+                        t["value"].toString(),
+                        style: const TextStyle(
+                          fontSize: 23.0,
+                          fontWeight: FontWeight.bold,
+                          color: AppColors.ink,
+                        ),
+                      ),
+                      selected: t["selected"] == 'true',
+                      value: t["selected"] == 'true',
+                      controlAffinity: ListTileControlAffinity.trailing,
+                      onChanged: (bool? val) {
+                        setState(() {
+                          changeShwahed(t, val!);
+                        });
+                      },
+                      activeColor: Colors.brown[900],
+                    ))
+                .toList(),
           ),
-        ),
-        centerTitle: true,
-        backgroundColor: Color(0xff22160B),
-        title: Text("اختر الشواهد",
-            style: TextStyle(
-                color: Colors.brown[100],
-                fontSize: 23.0,
-                fontWeight: FontWeight.bold)),
-      ),
-      body: Container(
-        decoration: BoxDecoration(
-          color: Color(0xff22160B),
-          image: DecorationImage(
-            image: AssetImage("assets/images/islam.png"),
-            fit: BoxFit.cover,
-          ),
-        ),
-        child: Column(
-          children: <Widget>[
-            Expanded(
-                child: Container(
-              child: Column(
-                children: globals.myshawahed
-                    .map((t) => CheckboxListTile(
-                          autofocus:
-                              globals.myshawahed.indexOf(t) == 0 ? true : false,
-                          title: Text(t["value"].toString(),
-                              style: TextStyle(
-                                fontSize: 23.0,
-                                fontWeight: FontWeight.bold,
-                              ),
-                              textAlign: TextAlign.right),
-                          selected: t["selected"] == 'true',
-                          value: t["selected"] == 'true',
-                          controlAffinity: ListTileControlAffinity.trailing,
-                          onChanged: (bool? val) {
-                            setState(() {
-                              changeShwahed(t, val!);
-                              //globals.tafseerFolder = val;
-                              //  Navigator.of(context).pop();
-                            });
-                          },
-                          activeColor: Colors.brown[900],
-                        ))
-                    .toList(),
-              ),
-            )),
-          ],
         ),
       ),
     );

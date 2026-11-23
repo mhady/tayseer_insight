@@ -42,3 +42,12 @@ app.*.map.json
 /android/app/debug
 /android/app/profile
 /android/app/release
+
+# Signing material — never commit (see ACCESSIBILITY_REVIEW.md §4)
+key.properties
+android/key.properties
+*.keystore
+*.jks
+*.pem
+*.der
+publish_key/

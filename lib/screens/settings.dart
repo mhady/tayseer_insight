@@ -1,130 +1,45 @@
 import 'package:flutter/material.dart';
+import 'package:tayseer_insight/widgets/app_button.dart';
+import 'package:tayseer_insight/widgets/app_scaffold.dart';
 
 class Settings extends StatefulWidget {
+  const Settings({super.key});
+
   @override
-  State<StatefulWidget> createState() {
-    return SettingsState();
-  }
+  State<StatefulWidget> createState() => SettingsState();
 }
 
 class SettingsState extends State<Settings> {
+  // Same behaviour as before (replace this screen with the target), but done
+  // in one step instead of pop() followed by pushNamed().
+  void _open(String route) => Navigator.of(context).pushReplacementNamed(route);
+
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        leading: Padding(
-          padding: EdgeInsets.symmetric(vertical: 10.0, horizontal: 0.0),
-          child: new GestureDetector(
-            onTap: () {
-              Navigator.of(context).pop();
-            },
-            child: Text("الرجوع",
-                style: TextStyle(fontSize: 16.0, color: Colors.brown[100])),
-          ),
-        ),
-        centerTitle: true,
-        backgroundColor: Color(0xff22160B),
-        title: Text('الإعدادات',
-            style: TextStyle(
-                color: Colors.brown[100],
-                fontSize: 23.0,
-                fontWeight: FontWeight.bold)),
-      ),
-      body: Container(
-        decoration: BoxDecoration(
-          color: Color(0xff22160B),
-          image: DecorationImage(
-            image: AssetImage("assets/images/islam.png"),
-            fit: BoxFit.cover,
-          ),
-        ),
-        child: Column(
-          children: <Widget>[
-            Padding(
-              padding: EdgeInsets.only(top: 5.0),
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                children: <Widget>[
-                  new ButtonTheme(
-                    height: 70.0,
-                    minWidth: 170.0,
-                    child: TextButton(
-                      autofocus: true,
-                      onPressed: () {
-                        Navigator.of(context).pop();
-                        Navigator.pushNamed(context, 'qare2Settings');
-                      },
-                      child: Text("تغيير القارئ",
-                          style: TextStyle(fontSize: 27.0)),
-                          style: OutlinedButton.styleFrom( 
-                      
-                    foregroundColor : Colors.brown[100], // Text Color
-                   backgroundColor: Color(0xff22160B), 
-                    //splashColor: Colors.grey,
-                    shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.zero, // Sharp corners
-                      ),
-                  ),
-                    ),
-                  ),
-                  new ButtonTheme(
-                    height: 70.0,
-                    minWidth: 170.0,
-                    child: TextButton(
-                      onPressed: () {
-                        Navigator.of(context).pop();
-                        Navigator.pushNamed(context, 'tafseerSettings');
-                      },
-                      child: Text("تغيير التفسير",
-                          style: TextStyle(fontSize: 27.0)),
-                            style: OutlinedButton.styleFrom( 
-                  
-                    foregroundColor : Colors.brown[100], // Text Color
-                   backgroundColor: Color(0xff22160B), 
-                    //splashColor: Colors.grey,
-                    shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.zero, // Sharp corners
-                      ),
-                  ),
-                    ),
-                  ),
-
-                  ////////////
-                ],
-              ),
+    return AppScaffold(
+      title: 'الإعدادات',
+      body: SingleChildScrollView(
+        padding: const EdgeInsets.all(8),
+        child: AppButtonWrap(
+          maxColumns: 2,
+          spacing: 8,
+          children: [
+            AppButton(
+              label: 'تغيير القارئ',
+              fontSize: 27,
+              autofocus: true,
+              onPressed: () => _open('qare2Settings'),
             ),
-
-            Padding(
-              padding: EdgeInsets.only(top: 5.0),
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                children: <Widget>[
-                  new ButtonTheme(
-                    height: 70.0,
-                    minWidth: 170.0,
-                    child: TextButton(
-                      onPressed: () {
-                        Navigator.of(context).pop();
-                        Navigator.pushNamed(context, 'shwahedSettings');
-                      },
-                      child:
-                          Text("ضبط الشواهد", style: TextStyle(fontSize: 27.0)),
-                           style: OutlinedButton.styleFrom( 
-                       
-                    foregroundColor : Colors.brown[100], // Text Color
-                   backgroundColor: Color(0xff22160B), 
-                    //splashColor: Colors.grey,
-                    shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.zero, // Sharp corners
-                      ),
-                  ),
-                    ),
-                  ),
-                ],
-              ),
-            )
-
-            ///
+            AppButton(
+              label: 'تغيير التفسير',
+              fontSize: 27,
+              onPressed: () => _open('tafseerSettings'),
+            ),
+            AppButton(
+              label: 'ضبط الشواهد',
+              fontSize: 27,
+              onPressed: () => _open('shwahedSettings'),
+            ),
           ],
         ),
       ),

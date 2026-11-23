@@ -1,4 +1,8 @@
+import 'package:tayseer_insight/utils/log.dart';
 import 'package:flutter/material.dart';
+import 'package:tayseer_insight/widgets/app_scaffold.dart';
+import 'package:tayseer_insight/app/theme.dart';
+import 'package:tayseer_insight/widgets/loading_view.dart';
 import 'dart:convert';
 import 'package:flutter/services.dart' show rootBundle;
 import 'package:tayseer_insight/globals.dart' as globals;
@@ -23,69 +27,44 @@ class TafseerSettingsState extends State<TafseerSettings> {
         await rootBundle.loadString("assets/data/tafseerat.json");
     setState(() {
       _myTafseer = List<Map>.from(jsonDecode(jsonQARE2) as List);
-      print("*******_myTafseer: $_myTafseer");
+      log("*******_myTafseer: $_myTafseer");
     });
   }
 
   @override
   Widget build(BuildContext context) {
-    if (_myTafseer == null) return new Scaffold();
+    if (_myTafseer == null) return const LoadingView();
 
-    return new Scaffold(
-      appBar: AppBar(
-        leading: Padding(
-          padding: EdgeInsets.symmetric(vertical: 10.0, horizontal: 0.0),
-          child: new GestureDetector(
-            onTap: () {
-              Navigator.of(context).pop();
-            },
-            child: Text("الرجوع",
-                style: TextStyle(fontSize: 16.0, color: Colors.brown[100])),
+    return AppScaffold(
+      title: 'اختر التفسير',
+      body: SingleChildScrollView(
+        child: Container(
+          color: AppColors.parchment,
+          child: Column(
+            children: _myTafseer!
+                .map((t) => RadioListTile<String>(
+                      autofocus: _myTafseer!.indexOf(t) == 0,
+                      title: Text(
+                        t["tafseerType"].toString(),
+                        style: const TextStyle(
+                          fontSize: 23.0,
+                          fontWeight: FontWeight.bold,
+                          color: AppColors.ink,
+                        ),
+                      ),
+                      groupValue: globals.tafseerFolder.toString(),
+                      value: t["tafseerFolder"].toString(),
+                      controlAffinity: ListTileControlAffinity.trailing,
+                      onChanged: (val) {
+                        setState(() {
+                          globals.tafseerFolder = int.parse(val as String);
+                          Navigator.of(context).pop();
+                        });
+                      },
+                      activeColor: Colors.brown[900],
+                    ))
+                .toList(),
           ),
-        ),
-        centerTitle: true,
-        backgroundColor: Color(0xff22160B),
-        title: Text("اختر التفسير",
-            style: TextStyle(
-                color: Colors.brown[100],
-                fontSize: 23.0,
-                fontWeight: FontWeight.bold)),
-      ),
-      body: Container(
-        decoration: BoxDecoration(
-          color: Color(0xff22160B),
-          image: DecorationImage(
-            image: AssetImage("assets/images/islam.png"),
-            fit: BoxFit.cover,
-          ),
-        ),
-        child: Column(
-          children: <Widget>[
-            Expanded(
-                child: Container(
-              child: Column(
-                children: _myTafseer!
-                    .map((t) => RadioListTile<String>(
-                          autofocus: _myTafseer!.indexOf(t) == 0 ? true : false,
-                          title: Text(t["tafseerType"].toString(),
-                              style: TextStyle(
-                                  fontSize: 23.0, fontWeight: FontWeight.bold),
-                              textAlign: TextAlign.right),
-                          groupValue: globals.tafseerFolder.toString(),
-                          value: t["tafseerFolder"].toString(),
-                          controlAffinity: ListTileControlAffinity.trailing,
-                          onChanged: (val) {
-                            setState(() {
-                              globals.tafseerFolder = int.parse(val as String);
-                              Navigator.of(context).pop();
-                            });
-                          },
-                          activeColor: Colors.brown[900],
-                        ))
-                    .toList(),
-              ),
-            )),
-          ],
         ),
       ),
     );
