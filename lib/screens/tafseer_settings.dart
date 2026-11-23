@@ -2,6 +2,7 @@ import 'package:tayseer_insight/utils/log.dart';
 import 'package:flutter/material.dart';
 import 'package:tayseer_insight/widgets/app_scaffold.dart';
 import 'package:tayseer_insight/app/theme.dart';
+import 'package:tayseer_insight/services/settings_store.dart';
 import 'package:tayseer_insight/widgets/loading_view.dart';
 import 'dart:convert';
 import 'package:flutter/services.dart' show rootBundle;
@@ -58,6 +59,7 @@ class TafseerSettingsState extends State<TafseerSettings> {
                       onChanged: (val) {
                         setState(() {
                           globals.tafseerFolder = int.parse(val as String);
+                          SettingsStore.saveTafseer(globals.tafseerFolder);
                           Navigator.of(context).pop();
                         });
                       },

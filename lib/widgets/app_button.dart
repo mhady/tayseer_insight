@@ -18,6 +18,7 @@ class AppButton extends StatelessWidget {
     this.autofocus = false,
     this.expand = false,
     this.bold = false,
+    this.subtitle,
   });
 
   final String label;
@@ -33,21 +34,44 @@ class AppButton extends StatelessWidget {
   final bool expand;
   final bool bold;
 
+  /// Optional smaller second line (e.g. reader name). Spoken after [label].
+  final String? subtitle;
+
   @override
   Widget build(BuildContext context) {
     final button = ElevatedButton(
       onPressed: onPressed,
       autofocus: autofocus,
       style: AppTheme.buttonStyle(minHeight: minHeight),
-      child: Text(
-        label,
-        textAlign: TextAlign.center,
-        semanticsLabel: semanticLabel,
-        style: TextStyle(
-          fontSize: fontSize,
-          fontWeight: bold ? FontWeight.bold : null,
-        ),
-      ),
+      child: subtitle == null || subtitle!.isEmpty
+          ? Text(
+              label,
+              textAlign: TextAlign.center,
+              semanticsLabel: semanticLabel,
+              style: TextStyle(
+                fontSize: fontSize,
+                fontWeight: bold ? FontWeight.bold : null,
+              ),
+            )
+          : Column(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                Text(
+                  label,
+                  textAlign: TextAlign.center,
+                  semanticsLabel: semanticLabel,
+                  style: TextStyle(
+                    fontSize: fontSize,
+                    fontWeight: bold ? FontWeight.bold : null,
+                  ),
+                ),
+                Text(
+                  subtitle!,
+                  textAlign: TextAlign.center,
+                  style: TextStyle(fontSize: fontSize * 0.7),
+                ),
+              ],
+            ),
     );
     return expand ? SizedBox(width: double.infinity, child: button) : button;
   }

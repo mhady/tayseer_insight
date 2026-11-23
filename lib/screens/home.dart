@@ -1,14 +1,14 @@
 import 'package:tayseer_insight/utils/log.dart';
 import 'package:flutter/material.dart';
 
-import 'package:shared_preferences/shared_preferences.dart';
 import 'package:tayseer_insight/app/theme.dart';
+import 'package:tayseer_insight/services/settings_store.dart';
+import 'package:tayseer_insight/widgets/loading_view.dart';
 import 'package:tayseer_insight/widgets/TyseerButton.dart';
 import 'package:tayseer_insight/widgets/app_scaffold.dart';
 import '../globals.dart';
 import './sura_subpage.dart';
 import 'package:tayseer_insight/globals.dart' as globals;
-import 'dart:convert';
 
 class Home extends StatefulWidget {
   @override
@@ -44,89 +44,52 @@ const List<(int, String, String)> _suraGroups = [
 
 class HomeState extends State<Home> {
   bool data_ready = false;
+  bool _failed = false;
+
   @override
   void initState() {
     super.initState();
-    getQare2();
-    getShwahed();
-    _asyncMethod();
+    _boot();
   }
 
-  _asyncMethod() async {
-    // log('getAyaTextList called  ');
-    await globals.LoadData().getAyaTextList();
-    setState(() {
-      data_ready = true;
-      // log('getAyaTextList end  ');
-      // log(globals.AyaTextList);
-    });
+  /// Restores the saved settings (reader, tafseer, shawahed) and loads the
+  /// ayah text. Shows an error with a retry button if loading fails instead of
+  /// staying on the loading screen forever.
+  Future<void> _boot() async {
+    try {
+      await SettingsStore.load();
+      await globals.LoadData().getAyaTextList();
+      if (!mounted) return;
+      setState(() {
+        data_ready = true;
+        _failed = false;
+      });
+    } catch (e, st) {
+      log('home boot failed: $e\n$st');
+      if (mounted) setState(() => _failed = true);
+    }
   }
 
   void suraSubpage(int value) {
-    RequiredSura requiredSura = new RequiredSura(id: value);
+    RequiredSura requiredSura = RequiredSura(id: value);
     Navigator.pushNamed(context, 'suraSubpage', arguments: requiredSura);
   }
 
-  Future loadShwahedData() async {
-    SharedPreferences prefs = await SharedPreferences.getInstance();
-
-    return prefs.getStringList('shawahed_setting');
-  }
-
-  void getShwahed() async {
-    //SharedPreferences prefs = await SharedPreferences.getInstance();
-    List<String>? _myshawahed = null; //prefs.getStringList('shawahed_setting');
-
-    loadShwahedData().then((data) {
-      setState(() {
-        _myshawahed = data;
-      });
-    });
-
-    if (_myshawahed != null && _myshawahed!.length > 0) {
-      // exist in saved preferences
-      if (globals.myshawahed.length == 0) //not loaded
-      {
-        for (String i in _myshawahed!) {
-          var item = List<Map>.from(jsonDecode("[" + i + "]") as List);
-          globals.myshawahed.add({
-            'type': item[0]['type'],
-            'value': item[0]['value'],
-            'selected': item[0]['selected']
-          });
-        }
-      }
-    } else {
-      if (globals.myshawahed.length == 0) //not loaded
-      {
-        globals.myshawahed.add(
-            {"type": "elsab3", "value": "شواهد السبع", "selected": "true"});
-        globals.myshawahed.add(
-            {"type": "elthalath", "value": "شواهد الثلاث", "selected": "true"});
-        globals.myshawahed.add(
-            {"type": "ershadat", "value": " متشابهات", "selected": "true"});
-        globals.myshawahed
-            .add({"type": "twgeh", "value": "توجيهات", "selected": "true"});
-        globals.myshawahed
-            .add({"type": "3adAlay", "value": "عد الآي", "selected": "true"});
-      }
-    }
-  }
-
-  void getQare2() async {
-    SharedPreferences prefs = await SharedPreferences.getInstance();
-    String? savedQare2 = prefs.getString('Qare2');
-    if (savedQare2 == null) {
-      savedQare2 = "ATolbaHfs";
-    } else {
-      globals.qre2Folder = savedQare2;
-    }
-
-    log(globals.qre2Folder);
-    log(savedQare2);
-  }
-
+  @override
   Widget build(BuildContext context) {
+    if (_failed) {
+      return AppScaffold(
+        title: 'تيسير القراءات',
+        showBack: false,
+        body: ErrorView(
+          message: 'تعذر تحميل بيانات التطبيق.',
+          onRetry: () {
+            setState(() => _failed = false);
+            _boot();
+          },
+        ),
+      );
+    }
     if (!data_ready) return globals.GlobalUI().getLoadingContent();
     final scale = AppTheme.textScale(context);
     return AppScaffold(

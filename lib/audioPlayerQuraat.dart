@@ -1,54 +1,75 @@
-library tayseer_insight.globals;
-
-import 'package:tayseer_insight/utils/log.dart';
+import 'dart:async';
 import 'dart:io';
 import 'dart:typed_data';
 
-import 'package:flutter/foundation.dart';
+import 'package:flutter/foundation.dart' show visibleForTesting;
 import 'package:flutter/material.dart';
-import 'package:tayseer_insight/widgets/app_button.dart';
-import 'package:flutter/services.dart';
-import 'package:shared_preferences/shared_preferences.dart';
-
-import 'package:permission_handler/permission_handler.dart';
-
-// import 'mflutter_sound.dart';
-
-// import 'package:flutter/foundation.dart' show kIsWeb;
-
-// import 'mflutter_sound.dart';
 import 'package:flutter_sound/flutter_sound.dart';
+import 'package:permission_handler/permission_handler.dart';
+import 'package:tayseer_insight/app/theme.dart';
+import 'package:tayseer_insight/utils/aya_utils.dart';
+import 'package:tayseer_insight/utils/log.dart';
+import 'package:tayseer_insight/widgets/app_button.dart';
 
-/*
-audioPlayerQuraat class
-*/
+/// Message shown/announced when audio cannot start (usually no connection).
+const String audioErrorMessage = 'تعذر تشغيل الصوت. تأكد من الاتصال بالإنترنت.';
+
+/// Plays one MP3 at a time (an ayah, a "khedma" or a "khatma" recording) and
+/// renders the play/stop/seek controls.
+///
+/// Owner screens MUST call [dispose] from `State.dispose`; before this was
+/// added, audio kept playing after leaving a screen and progress listeners
+/// piled up on every play.
 class audioPlayerQuraat {
-  Duration _duration = new Duration();
-  Duration _position = new Duration();
+  audioPlayerQuraat({
+    required this.onStateChanged,
+    required this.oncompeleted,
+    this.onError,
+  });
 
-  FlutterSoundPlayer webdPlayer = new FlutterSoundPlayer();
+  final VoidCallback onStateChanged;
+  final VoidCallback oncompeleted;
+
+  /// Called when playback fails to start or breaks (with a user-facing message).
+  final void Function(String message)? onError;
+
+  /// Skip buttons only make sense for long recordings (khedma/khatma), not for
+  /// a single ayah.
+  static const Duration _skipButtonsMinDuration = Duration(seconds: 30);
+  static const Duration _skipStep = Duration(seconds: 10);
+
+  Duration _duration = Duration.zero;
+  Duration _position = Duration.zero;
+
+  FlutterSoundPlayer? _player;
+  StreamSubscription<PlaybackDisposition>? _progressSub;
+  bool _disposed = false;
+  bool _dragging = false;
+
+  /// Incremented by every play()/stop()/dispose(); an in-flight play() that
+  /// finds its token stale quietly gives up.
+  int _token = 0;
+
   bool isStarted = false;
   bool isPaused = false;
   bool isComplete = false;
-  VoidCallback onStateChanged;
-  VoidCallback oncompeleted;
-  bool kIsWeb = true; //try all as web
-  String audio_url = "";
-
+  String audio_url = '';
   bool isLocal = false;
-////////////////////////////INIT OF AUDIO PLAYER///////////////////////
-  audioPlayerQuraat(
-      {required this.onStateChanged, required this.oncompeleted}) {
-    this._position = Duration(seconds: 0);
-    if (kIsWeb) {
-      // running on the web!
 
-    } else {
-      //
-    }
+  /// Non-null after a failure, until the next play().
+  String? errorMessage;
+
+  /// Lets widget tests render the controls with a known position/length
+  /// without starting the native player.
+  @visibleForTesting
+  void debugSetProgress({required Duration position, required Duration duration}) {
+    _position = position;
+    _duration = duration;
   }
 
-  /// Play/pause + stop buttons and the seek slider.
+  // ---------------------------------------------------------------- controls
+
+  /// Play/pause + stop buttons, skip buttons (long audio only) and the slider.
   Widget player_buttons(MediaQueryData AppMediaQueryData) {
     return SizedBox(
       width: AppMediaQueryData.size.width,
@@ -59,26 +80,15 @@ class audioPlayerQuraat {
             AppButtonWrap(
               children: <Widget>[
                 AppButton(
-                  label: isStarted ? 'ايقاف مؤقت' : 'تشغيل',
+                  label: isStarted ? 'إيقاف مؤقت' : 'تشغيل',
                   fontSize: 20.0,
                   minHeight: 80,
                   bold: true,
                   autofocus: true,
-                  onPressed: () {
-                    if (isStarted) {
-                      pause();
-                    } else if (isPaused) {
-                      resume();
-                    } else if (audio_url.isNotEmpty) {
-                      play();
-                    } else {
-                      log('nothing to play ');
-                    }
-                    onStateChanged();
-                  },
+                  onPressed: _onPlayPressed,
                 ),
                 AppButton(
-                  label: 'إيقاف',
+                  label: 'إيقاف تام',
                   fontSize: 20.0,
                   minHeight: 80,
                   bold: true,
@@ -86,6 +96,26 @@ class audioPlayerQuraat {
                 ),
               ],
             ),
+            if (_duration >= _skipButtonsMinDuration)
+              Padding(
+                padding: const EdgeInsets.only(top: 4),
+                child: AppButtonWrap(
+                  children: <Widget>[
+                    AppButton(
+                      label: 'تقديم 10 ثوان',
+                      fontSize: 18,
+                      minHeight: 64,
+                      onPressed: () => seekBy(_skipStep),
+                    ),
+                    AppButton(
+                      label: 'رجوع 10 ثوان',
+                      fontSize: 18,
+                      minHeight: 64,
+                      onPressed: () => seekBy(-_skipStep),
+                    ),
+                  ],
+                ),
+              ),
             slider(),
           ],
         ),
@@ -93,184 +123,246 @@ class audioPlayerQuraat {
     );
   }
 
+  void _onPlayPressed() {
+    if (isStarted) {
+      pause();
+    } else if (isPaused) {
+      resume();
+    } else if (audio_url.isNotEmpty) {
+      play();
+    } else {
+      log('nothing to play');
+    }
+    onStateChanged();
+  }
+
+  /// Seek slider. It is spoken as a time ("الموضع دقيقة و5 ثانية من ...") rather
+  /// than a percentage, and is disabled until the length of the audio is known.
   Widget slider() {
-    log('max is =' + this._duration.inSeconds.toString());
+    final maxSeconds = _duration.inSeconds.toDouble();
+    final enabled = maxSeconds > 0;
+    final value = enabled
+        ? _position.inSeconds.toDouble().clamp(0.0, maxSeconds).toDouble()
+        : 0.0;
     return Padding(
-      padding: const EdgeInsets.only(top: 40.0),
-      child: Slider(
-        value: this._position.inSeconds.toDouble(),
-        min: 0.0,
-        max: this._duration.inSeconds.toDouble(),
-        activeColor: Color(0xff22160B),
-        inactiveColor: Color(0xff22160B),
-        onChanged: (double value) {
-          log('seek the slider with value=' + value.toString());
-          this._position = Duration(seconds: value.toInt());
-          // setState(() {
-          //   seekToSecond(value.toInt());
-          //   value = value;
-          // });
-        },
-        onChangeEnd: (double newvalue) {
-          log('Ended change on $newvalue');
-
-          Duration newDuration = Duration(seconds: newvalue.toInt());
-
-          this.seek(newDuration);
-          this.onStateChanged();
-          // setState(() {
-          //   seekToSecond(newvalue.toInt());
-          //   newvalue = newvalue;
-          // });
-        },
+      padding: const EdgeInsets.only(top: 16.0, left: 8, right: 8),
+      child: Semantics(
+        // The control's NAME; its value is the spoken time (below).
+        label: 'موضع التشغيل',
+        child: SliderTheme(
+          data: SliderThemeData(
+            activeTrackColor: AppColors.ink,
+            inactiveTrackColor: AppColors.ink.withValues(alpha: 0.3),
+            thumbColor: AppColors.ink,
+            overlayColor: AppColors.ink.withValues(alpha: 0.15),
+            trackHeight: 6,
+          ),
+          child: Slider(
+            value: value,
+            min: 0.0,
+            max: enabled ? maxSeconds : 1.0,
+            // Only shown (and spoken) while dragging.
+            label: _dragging ? spokenDuration(Duration(seconds: value.round())) : null,
+            semanticFormatterCallback: (v) =>
+                'الموضع ${spokenDuration(Duration(seconds: v.round()))} '
+                'من ${spokenDuration(_duration)}',
+            onChangeStart: enabled ? (_) => _dragging = true : null,
+            onChanged: enabled
+                ? (v) {
+                    _position = Duration(seconds: v.round());
+                    onStateChanged();
+                  }
+                : null,
+            onChangeEnd: enabled
+                ? (v) {
+                    _dragging = false;
+                    seek(Duration(seconds: v.round()));
+                    onStateChanged();
+                  }
+                : null,
+          ),
+        ),
       ),
     );
   }
 
-  void onPlayerCompletion() {
-    log('onPlayerCompletion called  ');
-    this.isStarted = false;
-    isComplete = true;
-    this.oncompeleted();
-    // buttonValue.text = "تشغيل";
-  }
+  // ------------------------------------------------------------------ setup
 
   Future PlayGoogleDriveFile(fileID) async {
-    audio_url = "https://drive.google.com/uc?export=mp3&id=" + fileID;
-    play();
+    audio_url = 'https://drive.google.com/uc?export=mp3&id=$fileID';
+    await play();
   }
 
-//
-//
-  setIsLocal(isLocal_setting) {
-    isLocal = isLocal_setting;
+  void setIsLocal(bool isLocalSetting) => isLocal = isLocalSetting;
+
+  void setPlayUrl(String url) {
+    log('setPlayUrl: $url');
+    audio_url = url;
   }
 
-  setPlayUrl(onlineURL) {
-    log("setPlayUrl :" + onlineURL);
-    audio_url = onlineURL;
-  }
+  // ---------------------------------------------------------------- playback
 
-///////////////////PLAY AUDIO//////////////////////
-  Future play({String onlineURL = ''}) async {
-    if (onlineURL == '') onlineURL = audio_url;
-    audio_url = onlineURL;
-    if (kIsWeb) {
-      // running on the web!
-      await stop();
-      this._position = Duration(seconds: 0);
-      webdPlayer.closePlayer();
+  Future<void> play({String onlineURL = ''}) async {
+    if (_disposed) return;
+    if (onlineURL.isNotEmpty) audio_url = onlineURL;
+    if (audio_url.isEmpty) return;
 
-      webdPlayer = (await FlutterSoundPlayer().openPlayer())!;
-      log('play...' + audio_url);
+    final token = ++_token;
+    errorMessage = null;
+    isComplete = false;
+    try {
+      await _release();
+      if (_disposed || token != _token) return;
+      _position = Duration.zero;
+      _duration = Duration.zero;
+
+      final player = await FlutterSoundPlayer().openPlayer();
+      if (player == null) throw StateError('audio player could not be opened');
+      if (_disposed || token != _token) {
+        await player.closePlayer();
+        return;
+      }
+      _player = player;
+
+      Duration? length;
       if (isLocal) {
-        var status = await Permission.storage.status;
-        if (!status.isGranted) {
-          await Permission.storage.request();
-        }
-        final file = new File('${audio_url}');
-        Uint8List buffer = await file.readAsBytes();
-        // await file.writeAsBytes((await loadAsset()).buffer.asUint8List());
-// final result = await audioPlayer.play(file.path, isLocal: true);
-//         // Load a local audio file and get it as a buffer
-        // Uint8List buffer =
-        //     (await rootBundle.load(audio_url)).buffer.asUint8List();
-
-//        webdPlayer = (await FlutterSoundPlayer()).startPlayerFromBuffer(
-//           buffer,
-//           codec: Codec.mp3,
-//           whenFinished: () {
-//             // log('I hope you enjoyed listening to this song');
-//             onPlayerCompletion();
-//           },
-//         );
-        Duration? d = await webdPlayer.startPlayer(
-          // fromURI: audio_url,
+        final status = await Permission.storage.status;
+        if (!status.isGranted) await Permission.storage.request();
+        final Uint8List buffer = await File(audio_url).readAsBytes();
+        length = await player.startPlayer(
           fromDataBuffer: buffer,
           codec: Codec.mp3,
-          whenFinished: () {
-            // log('I hope you enjoyed listening to this song');
-            onPlayerCompletion();
-          },
+          whenFinished: () => _onFinished(token),
         );
-        _duration = d!;
       } else {
-        Duration? d = await webdPlayer.startPlayer(
+        length = await player.startPlayer(
           fromURI: audio_url,
           codec: Codec.mp3,
-          whenFinished: () {
-            // log('I hope you enjoyed listening to this song');
-            onPlayerCompletion();
-          },
+          whenFinished: () => _onFinished(token),
         );
-        _duration = d!;
       }
+      if (_disposed || token != _token) return;
 
-      log('ddddddddd _duration=' + _duration.toString());
-      webdPlayer.setSubscriptionDuration(Duration(milliseconds: 300));
-      webdPlayer.onProgress!.listen((e) {
-        // Duration maxDuration = e.duration;
-        // Duration position = e.position;
-        _position = e.position;
-        this.isStarted = true;
-        isComplete = false;
-        // log(' onProgress maxDuration' + maxDuration.toString());
-        // log('onProgress position' + position.toString());
-        this.onStateChanged();
+      _duration = length ?? Duration.zero;
+      isStarted = true;
+      isPaused = false;
+
+      await player.setSubscriptionDuration(const Duration(milliseconds: 300));
+      _progressSub = player.onProgress?.listen((e) {
+        if (_disposed || token != _token) return;
+        if (!_dragging) _position = e.position;
+        if (_duration == Duration.zero && e.duration > Duration.zero) {
+          _duration = e.duration;
+        }
+        onStateChanged();
       });
-
-      this.onStateChanged();
-    } else {}
-  }
-
-  seek(Duration newDuration) {
-    if (kIsWeb) {
-      webdPlayer.seekToPlayer(newDuration);
-    } else {}
-  }
-
-  bool getIsStarted() {
-    if (kIsWeb) {
-      return this.isStarted;
-      // webdPlayer.;
-    } else {
-      return this.isStarted;
+      onStateChanged();
+    } catch (e) {
+      log('play failed: $e');
+      if (_disposed || token != _token) return;
+      await _release();
+      isStarted = false;
+      isPaused = false;
+      errorMessage = audioErrorMessage;
+      onError?.call(audioErrorMessage);
+      onStateChanged();
     }
   }
 
-  Duration getDuration() {
-    // log('getDuration =' + _duration.toString());
-    return _duration;
+  void _onFinished(int token) {
+    if (_disposed || token != _token) return;
+    isStarted = false;
+    isPaused = false;
+    isComplete = true;
+    _position = _duration;
+    onStateChanged();
+    oncompeleted();
   }
 
-  Duration getPosition() {
-    return _position;
+  Future<void> seek(Duration newDuration) async {
+    final player = _player;
+    if (player == null || !player.isOpen()) return;
+    try {
+      await player.seekToPlayer(newDuration);
+      _position = newDuration;
+    } catch (e) {
+      log('seek failed: $e');
+    }
   }
 
-///////////////////PAUSE AUDIO//////////////////////
-  pause() async {
-    if (kIsWeb) {
-      if (webdPlayer.isOpen() )
-      if(webdPlayer.isPlaying) await webdPlayer.pausePlayer();
-      this.isStarted = false;
-      this.isPaused = true;
-      this.onStateChanged();
-    } else {}
+  Future<void> seekBy(Duration delta) {
+    var target = _position + delta;
+    if (target < Duration.zero) target = Duration.zero;
+    if (_duration > Duration.zero && target > _duration) target = _duration;
+    return seek(target);
   }
 
-///////////////////STOP AUDIO//////////////////////
-  stop() async {
-    if (kIsWeb) {
-      await webdPlayer.stopPlayer();
-      isStarted = false;
-      isPaused = false;
-      this.onStateChanged();
-    } else {}
+  bool getIsStarted() => isStarted;
+  Duration getDuration() => _duration;
+  Duration getPosition() => _position;
+
+  Future<void> pause() async {
+    final player = _player;
+    try {
+      if (player != null && player.isOpen() && player.isPlaying) {
+        await player.pausePlayer();
+      }
+    } catch (e) {
+      log('pause failed: $e');
+    }
+    if (_disposed) return;
+    isStarted = false;
+    isPaused = true;
+    onStateChanged();
   }
 
-  resume() async {
-    if (kIsWeb) {
-      if (isPaused) webdPlayer.resumePlayer();
-    } else {}
+  Future<void> resume() async {
+    final player = _player;
+    if (!isPaused || player == null) return;
+    try {
+      await player.resumePlayer();
+    } catch (e) {
+      log('resume failed: $e');
+      return;
+    }
+    if (_disposed) return;
+    isPaused = false;
+    isStarted = true;
+    onStateChanged();
+  }
+
+  Future<void> stop() async {
+    _token++; // cancels any play() still starting
+    await _release();
+    if (_disposed) return;
+    isStarted = false;
+    isPaused = false;
+    _position = Duration.zero;
+    onStateChanged();
+  }
+
+  /// Stops playback and frees the native player and its listener.
+  Future<void> _release() async {
+    await _progressSub?.cancel();
+    _progressSub = null;
+    final player = _player;
+    _player = null;
+    if (player == null) return;
+    try {
+      if (player.isOpen()) {
+        await player.stopPlayer();
+        await player.closePlayer();
+      }
+    } catch (e) {
+      log('release failed: $e');
+    }
+  }
+
+  /// Call from `State.dispose`. Safe to call more than once.
+  void dispose() {
+    if (_disposed) return;
+    _disposed = true;
+    _token++;
+    unawaited(_release());
   }
 }

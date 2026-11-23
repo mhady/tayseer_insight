@@ -1,403 +1,264 @@
-import 'package:tayseer_insight/utils/log.dart';
-import 'dart:convert';
-
 import 'package:flutter/material.dart';
-import 'package:tayseer_insight/widgets/app_button.dart';
-import 'package:tayseer_insight/widgets/app_scaffold.dart';
-
 import 'package:tayseer_insight/globals.dart' as globals;
-import 'package:http/http.dart' as http;
-import 'package:tayseer_insight/widgets/TyseerButton.dart';
-import '../audioPlayerQuraat.dart';
 import 'package:tayseer_insight/globals.dart';
+import 'package:tayseer_insight/services/remote_json.dart';
+import 'package:tayseer_insight/utils/announcer.dart';
+import 'package:tayseer_insight/utils/log.dart';
+import 'package:tayseer_insight/utils/nav.dart';
+import 'package:tayseer_insight/widgets/TyseerButton.dart';
+import 'package:tayseer_insight/widgets/app_scaffold.dart';
+import 'package:tayseer_insight/widgets/choice_list.dart';
+import 'package:tayseer_insight/widgets/loading_view.dart';
+import 'package:tayseer_insight/widgets/track_player_panel.dart';
+
+import '../audioPlayerQuraat.dart';
 
 class Extras extends StatefulWidget {
   final AyaSoraNumber? AyaSora;
 
-  Extras({this.AyaSora});
+  const Extras({super.key, this.AyaSora});
+
   @override
-  State<StatefulWidget> createState() {
-    return ExtrasState();
-  }
+  State<StatefulWidget> createState() => ExtrasState();
 }
 
+enum _Mode { list, items, play }
+
+enum _Status { loading, ready, error }
+
+/// "الخدمات": a list of services, each with a list of recordings, played by
+/// [audioPlayerQuraat]. Also opened from an ayah (intro / teaching / jam3
+/// recordings), in which case it jumps straight to that recording.
 class ExtrasState extends State<Extras> {
-  List<Map>? Khadmat_list;
-  List<Map>? khedma_list;
+  static const String _servicesTitle = 'الخدمات';
 
-  String ScreenMode = "khadamat";
-  String KhedmaName = "الخدمات";
-  String playText = "";
-  String playFileId = "";
-  int current_khedma_index = 0;
+  late final audioPlayerQuraat _player;
 
-  int gridLength = 0;
-  double childRatioLength = 0;
-  var audioPlayerQ = null;
+  List<Map> _services = [];
+  List<Map> _items = [];
+  _Mode _mode = _Mode.list;
+  _Status _status = _Status.loading;
+  String _title = _servicesTitle;
+  String _playText = '';
+  int _current = 0;
+  AyaSoraNumber? _args;
+  bool _launchedFromAya = false;
+  Future<void> Function() _retry = () async {};
 
-  Duration _duration = new Duration();
-  Duration _position = new Duration();
   @override
   void initState() {
-    audioPlayerQ = audioPlayerQuraat(
-        onStateChanged: () {
-          updateState();
-        },
-        oncompeleted: () {});
-
-    getKhadmat();
-  }
-
-  void updateState() {
-    setState(() {});
-  }
-
-  void getKhadmat() async {
-    ScreenMode = "khadamat";
-    var getKhadmaturl = globals.Khadmaturl;
-    var response = await http.get(Uri.parse(getKhadmaturl));
-    KhedmaName = "الخدمات";
-    var fileContent_json =
-        utf8.decode(response.bodyBytes).toString().replaceAll('khedma=', '');
-    Khadmat_list = List<Map>.from(jsonDecode(fileContent_json) as List);
-    var size = MediaQuery.of(context).size;
-
-    if (size.width < 400) {
-      gridLength = 1;
-      childRatioLength = 3.1;
-    } else if (size.width < 1200) {
-      gridLength = 2;
-      childRatioLength = 2.1;
-    } else {
-      gridLength = 3;
-      childRatioLength = 1.8;
-    }
-    // if (Khadmat_list!.length == 9 || Khadmat_list!.length == 12) {
-    //   gridLength = 1;
-    //   childRatioLength = 2.1;
-    // } else {
-    //   gridLength = 2;
-    //   childRatioLength = 2.0;
-    // }
-    setState(() {});
-    //response.pipe(new File('foo.txt').openWrite())
-    // });
-  }
-
-  void getKhedma(i) async {
-    //https://ahmedsamir.quraat.info/MP3Files.json
-    ScreenMode = "khedma";
-    KhedmaName = Khadmat_list![i]['name'];
-    var KhedmaPath = "https://" + Khadmat_list![i]['path'] + "/MP3Files.json";
-    var response = await http.get(Uri.parse(KhedmaPath));
-
-    var fileContent_json = utf8.decode(response.bodyBytes).toString();
-    khedma_list = List<Map>.from(jsonDecode(fileContent_json) as List);
-    setState(() {});
-  }
-
-  void playKhedma(i) async {
-    ScreenMode = "play";
-    current_khedma_index = i;
-    playText = khedma_list![i]['text'];
-    playFileId = khedma_list![i]['file_id'];
-    audioPlayerQ.PlayGoogleDriveFile(playFileId);
-    setState(() {});
-  }
-  //
-  //
-
-  getPrevoius() {
-    if (current_khedma_index > 0) playKhedma(current_khedma_index - 1);
-  }
-
-  getNext() {
-    if (current_khedma_index < khedma_list!.length)
-      playKhedma(current_khedma_index + 1);
-  }
-
-  Widget getNextPrvius() {
-    return AppButtonWrap(
-      children: [
-        AppButton(
-          label: 'التالي',
-          fontSize: 20.0,
-          minHeight: 80,
-          bold: true,
-          onPressed: getNext,
-        ),
-        AppButton(
-          label: 'السابق',
-          fontSize: 20.0,
-          minHeight: 80,
-          bold: true,
-          onPressed: getPrevoius,
-        ),
-      ],
+    super.initState();
+    _player = audioPlayerQuraat(
+      onStateChanged: () {
+        if (mounted) setState(() {});
+      },
+      oncompeleted: () {},
+      onError: (m) {
+        if (mounted) Announcer.say(context, m);
+      },
     );
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      _args = ModalRoute.of(context)?.settings.arguments as AyaSoraNumber?;
+      _start();
+    });
   }
 
-  Widget getPlayerScrren() {
-    return new Container(
-      height: MediaQuery.of(context).size.height,
-      decoration: BoxDecoration(
-        color: Color(0xff22160B),
-        image: DecorationImage(
-          image: AssetImage("assets/images/islam.png"),
-          fit: BoxFit.cover,
-        ),
-      ),
-      child: SingleChildScrollView(
-        padding: EdgeInsets.only(top: 5.0),
-        child: Wrap(
-          spacing: 10.0, // gap between adjacent chips
-          runSpacing: 4.0, // gap between lines
-          alignment: WrapAlignment.spaceEvenly,
-          children: <Widget>[
-///////////////////////////////SLIDER///////////////////////////////////////////////////////
-            // Container(
-            //   width: MediaQuery.of(context).size.width,
-            //   padding: EdgeInsets.only(bottom: 25.0),
-            //   // child: isLoading ? CircularProgressIndicator() :slider(),
+  @override
+  void dispose() {
+    _player.dispose();
+    super.dispose();
+  }
 
-            //   //   child: isLoading ? AlertDialog(
-            //   //       content:Container(
-            //   //         child:SingleChildScrollView(
-            //   //           scrollDirection: Axis.vertical,
-            //   //           child:Text( "جارى التحميل",style: TextStyle(fontSize: 23.0,fontWeight: FontWeight.bold),textAlign: TextAlign.center,),
-            //   //         )
-            //   //       ),
-            //   // ) :
-            // ),
+  // ------------------------------------------------------------------ data
 
-            Container(
-              width: MediaQuery.of(context).size.width,
-              padding: EdgeInsets.only(bottom: 25.0),
-              decoration: BoxDecoration(
-                color: Color(0xff22160B),
-              ),
-              child: Text(
-                playText,
-                style: TextStyle(color: Colors.brown[100], fontSize: 27.0),
-                textAlign: TextAlign.center,
-              ),
+  /// Runs [body] showing the loading view, then either the content or an error
+  /// view with a retry button.
+  Future<void> _run(Future<void> Function() body, Future<void> Function() retry) async {
+    _retry = retry;
+    setState(() => _status = _Status.loading);
+    try {
+      await body();
+      if (mounted) setState(() => _status = _Status.ready);
+    } catch (e, st) {
+      log('extras load failed: $e\n$st');
+      if (!mounted) return;
+      setState(() => _status = _Status.error);
+    }
+  }
 
-              //   child: isLoading ? AlertDialog(
-              //       content:Container(
-              //         child:SingleChildScrollView(
-              //           scrollDirection: Axis.vertical,
-              //           child:Text( "جارى التحميل",style: TextStyle(fontSize: 23.0,fontWeight: FontWeight.bold),textAlign: TextAlign.center,),
-              //         )
-              //       ),
-              // ) :
+  Future<void> _start() => _run(() async {
+        _services = await fetchJsonList(globals.Khadmaturl, stripPrefix: 'khedma=');
+        _mode = _Mode.list;
+        _title = _servicesTitle;
+        final args = _args;
+        _args = null; // only once
+        if (args != null) await _openFromAya(args);
+      }, _start);
+
+  Future<void> _openService(int i) => _run(() async {
+        _title = '${_services[i]['name']}';
+        _items = await fetchJsonList('https://${_services[i]['path']}/MP3Files.json');
+        _mode = _Mode.items;
+      }, () => _openService(i));
+
+  /// Finds the recording of the given ayah and plays it.
+  Future<void> _openFromAya(AyaSoraNumber a) async {
+    String path = '';
+    String file = '';
+    switch (a.Khadamat_fileType) {
+      case 3: // intro soghra
+        path = 'addons.quraat.info';
+        file = 'S${a.sora}A${a.aya}I.mp3';
+      case 4: // intro kobra
+        path = 'addonk.quraat.info';
+        file = 'S${a.sora}A${a.aya}I.mp3';
+      case 5: // mo3alem
+        path = 'learn.quraat.info';
+        file = 'S${a.sora}A${a.aya}M';
+      case 6: // jam3
+        path = 'learn.quraat.info';
+        file = 'S${a.sora}A${a.aya}J';
+    }
+    final i = _services.indexWhere((e) => e['path'] == path);
+    if (i < 0) {
+      _announce('لا يوجد تسجيل لهذه الآية');
+      return;
+    }
+    _title = '${_services[i]['name']}';
+    _items = await fetchJsonList('https://${_services[i]['path']}/MP3Files.json');
+    _mode = _Mode.items;
+    final j = _items.indexWhere((e) => '${e['file']}'.contains(file));
+    if (j < 0) {
+      _announce('لا يوجد تسجيل لهذه الآية');
+      return;
+    }
+    _launchedFromAya = true;
+    _play(j);
+  }
+
+  void _announce(String m) {
+    if (mounted) Announcer.say(context, m);
+  }
+
+  // --------------------------------------------------------------- playing
+
+  void _play(int i) {
+    _mode = _Mode.play;
+    _current = i;
+    _playText = '${_items[i]['text']}';
+    _player.PlayGoogleDriveFile(_items[i]['file_id']);
+    if (mounted) setState(() {});
+  }
+
+  void _next() {
+    if (_current + 1 < _items.length) {
+      _play(_current + 1);
+    } else {
+      _announce('هذا آخر تسجيل');
+    }
+  }
+
+  void _previous() {
+    if (_current > 0) {
+      _play(_current - 1);
+    } else {
+      _announce('هذا أول تسجيل');
+    }
+  }
+
+  // ------------------------------------------------------------------ back
+
+  bool get _canPopDirectly =>
+      _status != _Status.ready ||
+      _mode == _Mode.list ||
+      (_mode == _Mode.play && _launchedFromAya);
+
+  void _handleBack() {
+    if (_canPopDirectly) {
+      Navigator.of(context).pop();
+      return;
+    }
+    _player.stop();
+    setState(() {
+      if (_mode == _Mode.items) {
+        _mode = _Mode.list;
+        _title = _servicesTitle;
+      } else {
+        _mode = _Mode.items; // from player back to the recordings list
+      }
+    });
+  }
+
+  // ----------------------------------------------------------------- build
+
+  Widget _body() {
+    switch (_status) {
+      case _Status.loading:
+        return const LoadingView();
+      case _Status.error:
+        return ErrorView(onRetry: _retry);
+      case _Status.ready:
+        switch (_mode) {
+          case _Mode.list:
+            return ChoiceList(
+              labels: [for (final s in _services) '${s['name']}'],
+              onSelected: (i) {
+                _player.stop();
+                _openService(i);
+              },
+            );
+          case _Mode.items:
+            return ChoiceList(
+              labels: [for (final s in _items) '${s['text']}'],
+              onSelected: _play,
+            );
+          case _Mode.play:
+            return TrackPlayerPanel(
+              title: _playText,
+              player: _player,
+              onNext: _next,
+              onPrevious: _previous,
+            );
+        }
+    }
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return PopScope(
+      canPop: _canPopDirectly,
+      onPopInvokedWithResult: (didPop, result) {
+        if (!didPop) _handleBack();
+      },
+      child: AppScaffold(
+        title: _title,
+        onBack: _handleBack,
+        body: _body(),
+        bottomBar: AppBottomBar(
+          children: [
+            TyseerButton(
+              buttonHeight: 70,
+              text: 'المفضلات',
+              onPressed: () {
+                _player.pause();
+                Navigator.pushNamed(context, 'favorites');
+              },
             ),
-            //////////////////////////BUTTON (PLAY)//////////////////////////////
-            audioPlayerQ.player_buttons(MediaQuery.of(context)),
-            getNextPrvius(),
-///////////////////////BUTTON (STOP)////////////////////////////////
+            TyseerButton(
+              buttonHeight: 70,
+              text: 'الإعدادات',
+              onPressed: () {
+                _player.pause();
+                Navigator.pushNamed(context, 'settings');
+              },
+            ),
+            TyseerButton(
+              buttonHeight: 70,
+              text: 'الرئيسية',
+              onPressed: () => goHome(context),
+            ),
           ],
         ),
-      ),
-    );
-  }
-
-  Widget getPageContant() {
-    if (Khadmat_list == null || Khadmat_list!.length == 0)
-      return globals.GlobalUI().getLoadingContent();
-
-    var grid_list_used = Khadmat_list;
-    if (ScreenMode == 'khadamat') {
-    } else if (ScreenMode == 'khedma') {
-      if (khedma_list == null || khedma_list!.length == 0)
-        return globals.GlobalUI().getLoadingContent();
-      grid_list_used = khedma_list;
-    } else if (ScreenMode == 'play') {
-      return getPlayerScrren();
-    }
-
-    return new Container(
-      height: MediaQuery.of(context).size.height,
-      decoration: BoxDecoration(
-        color: Color(0xff22160B),
-        image: DecorationImage(
-          image: AssetImage("assets/images/islam.png"),
-          fit: BoxFit.cover,
-        ),
-      ),
-      child: GridView.builder(
-          shrinkWrap: true,
-          itemCount: grid_list_used!.length,
-          gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-              crossAxisCount: gridLength, childAspectRatio: childRatioLength),
-
-          // primary: false,
-          padding: const EdgeInsets.all(5),
-          itemBuilder: (BuildContext context, int index) {
-            return Card(
-              // elevation: 6.0,
-              child: new ButtonTheme(
-                // height: 70.0,
-                height: 200,
-                minWidth: 170.0,
-                child: TextButton(
-                  autofocus: index == 0 ? true : false,
-                  onPressed: () {
-                    audioPlayerQ.pause();
-                    if (ScreenMode == 'khadamat')
-                      getKhedma(index);
-                    else
-                      playKhedma(index);
-
-                    setState(() {});
-                    if (audioPlayerQ.isStarted) {
-                      log(
-                          '---------------------------------isStarted is true ');
-                    }
-                    //  showMyDialog(Khadmat_list![index]["sura_id"]);
-                  },
-                  child: Text(
-                      (ScreenMode == 'khadamat')
-                          ? grid_list_used![index]["name"]
-                          : grid_list_used![index]["text"],
-                      textAlign: TextAlign.center,
-                      style: TextStyle(
-                        fontSize: 24.0,
-                      )),
-                       style: TextButton.styleFrom(
-                        
-                   foregroundColor : Colors.brown[100], // Text Color
-                   backgroundColor: Color(0xff22160B), 
-                   shape:  RoundedRectangleBorder(
-                    borderRadius: BorderRadius.zero, // Sharp corners
-                  ),
-                    //splashColor: Colors.grey,
-                  ),
-                 
-                ),
-                
-              ),
-            );
-          }),
-    );
-  }
-  // exist in saved preferences
-
-///////////////////SLIDER WIDGET//////////////////////
-  Widget slider() {
-    log('max is =' + this._duration.inSeconds.toString());
-    return Padding(
-      padding: const EdgeInsets.only(top: 40.0),
-      child: Slider(
-          value: this._position.inSeconds.toDouble(),
-          min: 0.0,
-          max: this._duration.inSeconds.toDouble(),
-          activeColor: Color(0xff22160B),
-          inactiveColor: Color(0xff22160B),
-          onChanged: (double value) {
-            setState(() {
-              seekToSecond(value.toInt());
-              value = value;
-            });
-          }),
-    );
-  }
-
-  ///////////////////SLIDER ONCHANGE//////////////////////
-  void seekToSecond(int second) {
-    Duration newDuration = Duration(seconds: second);
-
-    audioPlayerQ.seek(newDuration);
-  }
-
-  Future<void> process_agruments(AyaSoraNumber AyaSora) async {
-    // find targeted json file
-    String json_file_Path = "";
-    String file_name = "";
-    if (AyaSora.Khadamat_fileType == 3) {
-      json_file_Path = "addons.quraat.info";
-      file_name = "S${AyaSora.sora}A${AyaSora.aya}I.mp3"; //"S002A055I.mp3
-    } // soghra
-    if (AyaSora.Khadamat_fileType == 4) {
-      json_file_Path = "addonk.quraat.info";
-      file_name = "S${AyaSora.sora}A${AyaSora.aya}I.mp3"; ////"S002A055I.mp3
-    } // Kobra
-    if (AyaSora.Khadamat_fileType == 5) {
-      json_file_Path = "learn.quraat.info";
-      file_name = "S${AyaSora.sora}A${AyaSora.aya}M"; // S001A006M
-    } // mo3alem
-    if (AyaSora.Khadamat_fileType == 6) {
-      json_file_Path = "learn.quraat.info";
-      file_name = "S${AyaSora.sora}A${AyaSora.aya}J"; //S002A002J
-    } // elgam3
-
-    int i = Khadmat_list!
-        .indexWhere((element) => element['path'] == json_file_Path);
-    if (i >= 0) {
-      KhedmaName = Khadmat_list![i]['name'];
-      var KhedmaPath = "https://" + Khadmat_list![i]['path'] + "/MP3Files.json";
-      var response = await http.get(Uri.parse(KhedmaPath));
-      var fileContent_json = utf8.decode(response.bodyBytes).toString();
-      khedma_list = List<Map>.from(jsonDecode(fileContent_json) as List);
-
-      //
-      //
-      //  find trgeted audio file and its i
-
-      int j = khedma_list!
-          .indexWhere((element) => element['file'].contains(file_name));
-      if (j >= 0) {
-        // play khedma number i ...
-        playKhedma(j);
-      }
-    }
-  }
-
-  Widget build(BuildContext context) {
-    RouteSettings settings = ModalRoute.of(context)!.settings;
-    AyaSoraNumber? AyaSora = settings.arguments as AyaSoraNumber?;
-    if (AyaSora != null) {
-      if (ScreenMode != "play") {
-        process_agruments(AyaSora);
-        return globals.GlobalUI().getLoadingContent();
-      }
-    }
-    return AppScaffold(
-      title: KhedmaName,
-      onBack: () {
-        audioPlayerQ.pause();
-        if (ScreenMode == 'khadamat' || ScreenMode == "play") {
-          Navigator.of(context).pop();
-        } else if (ScreenMode == 'khedma') {
-          getKhadmat();
-        } else {
-          ScreenMode = 'khedma';
-        }
-      },
-      body: getPageContant(),
-      bottomBar: AppBottomBar(
-        children: [
-          TyseerButton(
-            buttonHeight: 70,
-            text: 'المفضلات',
-            onPressed: () {
-              audioPlayerQ.pause();
-              Navigator.pushNamed(context, 'favorites');
-            },
-          ),
-          TyseerButton(
-            buttonHeight: 70,
-            text: 'الإعدادات',
-            onPressed: () {
-              audioPlayerQ.pause();
-              Navigator.pushNamed(context, 'settings');
-            },
-          ),
-          TyseerButton(
-            buttonHeight: 70,
-            text: 'الرئيسية',
-            onPressed: () => Navigator.pushNamed(context, 'Home'),
-          ),
-        ],
       ),
     );
   }

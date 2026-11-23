@@ -38,11 +38,16 @@ class AppScaffold extends StatelessWidget {
     this.onBack,
     this.showBack = true,
     this.subtitle,
+    this.subtitleLive = true,
     this.titleSize = 23,
   });
 
   final String title;
   final String? subtitle;
+
+  /// Announce subtitle changes to screen readers. Turn off when the subtitle
+  /// changes by itself (e.g. continuous playback).
+  final bool subtitleLive;
   final Widget body;
   final Widget? bottomBar;
 
@@ -64,7 +69,7 @@ class AppScaffold extends StatelessWidget {
         child: Padding(
           padding: const EdgeInsets.only(bottom: 6),
           child: Semantics(
-            liveRegion: true,
+            liveRegion: subtitleLive,
             child: Text(
               subtitle!,
               textAlign: TextAlign.center,

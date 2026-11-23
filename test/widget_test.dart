@@ -2,6 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:tayseer_insight/audioPlayerQuraat.dart';
+import 'package:tayseer_insight/globals.dart' as globals;
 import 'package:tayseer_insight/main.dart';
 import 'package:tayseer_insight/services/favorites_store.dart';
 import 'package:tayseer_insight/widgets/app_back_button.dart';
@@ -34,8 +36,23 @@ Future<void> _pumpApp(WidgetTester tester) async {
   expect(find.text('المفضلات'), findsOneWidget, reason: 'Home did not finish loading');
 }
 
+/// Waits (real time) until [finder] matches, pumping frames meanwhile.
+Future<void> _waitFor(WidgetTester tester, Finder finder, {int tries = 200}) async {
+  for (var i = 0; i < tries && finder.evaluate().isEmpty; i++) {
+    await tester.runAsync(() => Future<void>.delayed(const Duration(milliseconds: 50)));
+    await tester.pump();
+  }
+  await tester.pumpAndSettle();
+  expect(finder, findsWidgets, reason: 'timed out waiting for the expected widget');
+}
+
 void main() {
-  setUp(() => SharedPreferences.setMockInitialValues({}));
+  setUp(() {
+    SharedPreferences.setMockInitialValues({});
+    // flutter_test stalls repeated asset loads in later tests unless the
+    // bundle's cache is cleared between tests.
+    rootBundle.clear();
+  });
 
   group('shared widgets', () {
     testWidgets('AppBackButton is a real button, labelled, >= 48dp', (tester) async {
@@ -212,7 +229,11 @@ void main() {
       (tester) async {
     SharedPreferences.setMockInitialValues({
       'favorite1': ['2', '255', 'البقرة(255) الله لا إله'],
+      'shawahed_setting': [
+        '{"type":"twgeh","value":"توجيهات","selected":"false"}',
+      ],
     });
+    globals.myshawahed.clear();
     final handle = tester.ensureSemantics();
     tester.view.physicalSize = const Size(360 * 3, 740 * 3);
     tester.view.devicePixelRatio = 3;
@@ -220,6 +241,10 @@ void main() {
     addTearDown(tester.platformDispatcher.clearAllTestValues);
 
     await _pumpApp(tester);
+
+    // --- saved settings are restored on startup (they never were) ---
+    expect(globals.myshawahed.firstWhere((e) => e['type'] == 'twgeh')['selected'], 'false');
+    expect(globals.myshawahed.firstWhere((e) => e['type'] == 'elsab3')['selected'], 'true');
 
     // --- Arabic / right-to-left ---
     final context = tester.element(find.byType(Scaffold).first);
@@ -268,6 +293,78 @@ void main() {
     await tester.tap(find.text('الرجوع'));
     await tester.pumpAndSettle();
     expect(find.text('تيسير القراءات'), findsOneWidget);
+
+    // --- Open Al-Fatiha, ayah 7 (the LAST ayah) ---
+    await tester.tap(find.bySemanticsLabel('من سورة الفاتحة إلى سورة الأنفال'));
+    await tester.pumpAndSettle();
+    await _waitFor(tester, find.text('الفاتحة'));
+    await tester.tap(find.text('الفاتحة'));
+    await tester.pumpAndSettle();
+    expect(find.text('رقم الآية (من 1 إلى 7)'), findsOneWidget);
+    await tester.enterText(find.byType(TextField), '٧'); // Arabic-Indic digit
+    await tester.tap(find.text('ذهاب'));
+    await tester.pumpAndSettle();
+    await _waitFor(tester, find.text('سورة الفاتحة، الآية 7 من 7'));
+    expect(tester.takeException(), isNull);
+
+    // Next on the last ayah: stays put and does not crash (it used to throw).
+    await tester.tap(find.text('التالي'));
+    await tester.pumpAndSettle();
+    expect(find.text('سورة الفاتحة، الآية 7 من 7'), findsOneWidget);
+    expect(tester.takeException(), isNull);
+
+    // Previous moves one back...
+    await tester.tap(find.text('السابق'));
+    await _waitFor(tester, find.text('سورة الفاتحة، الآية 6 من 7'));
+
+    // ...and rapid taps are queued; the newest target wins and nothing mixes.
+    await tester.tap(find.text('السابق'));
+    await tester.tap(find.text('السابق'));
+    await tester.tap(find.text('السابق'));
+    await _waitFor(tester, find.text('سورة الفاتحة، الآية 3 من 7'));
+    expect(tester.takeException(), isNull);
+
+    // Previous on the first ayah: stays put and does not crash.
+    await tester.tap(find.text('السابق'));
+    await _waitFor(tester, find.text('سورة الفاتحة، الآية 2 من 7'));
+    await tester.tap(find.text('السابق'));
+    await _waitFor(tester, find.text('سورة الفاتحة، الآية 1 من 7'));
+    await tester.tap(find.text('السابق'));
+    await tester.pumpAndSettle();
+    expect(find.text('سورة الفاتحة، الآية 1 من 7'), findsOneWidget);
+    expect(tester.takeException(), isNull);
+
+    // Text dialog opens with the ayah and closes again.
+    await tester.tap(find.text('نص الآية'));
+    await tester.pumpAndSettle();
+    expect(find.byType(AlertDialog), findsOneWidget);
+    await tester.tap(find.text('خروج'));
+    await tester.pumpAndSettle();
+    expect(find.byType(AlertDialog), findsNothing);
+
+    // Continuous listening is a real on/off switch (it could never be turned off).
+    expect(find.text('استماع متواصل'), findsOneWidget);
+    await tester.ensureVisible(find.text('استماع متواصل'));
+    await tester.pump();
+    await tester.tap(find.text('استماع متواصل'));
+    await tester.pump();
+    expect(find.text('إيقاف الاستماع المتواصل'), findsOneWidget);
+    // No audio plugin in tests -> the failure is shown to the user, not swallowed.
+    await _waitFor(tester, find.text(audioErrorMessage));
+    await tester.ensureVisible(find.text('إيقاف الاستماع المتواصل'));
+    await tester.pump();
+    await tester.tap(find.text('إيقاف الاستماع المتواصل'));
+    await tester.pump();
+    expect(find.text('استماع متواصل'), findsOneWidget);
+
+    // Back to the sura list, forward again, then Home clears the history.
+    await tester.tap(find.text('الرجوع'));
+    await tester.pumpAndSettle();
+    expect(find.text('الفاتحة الى الأنفال'), findsOneWidget);
+    await tester.tap(find.text('الرئيسية'));
+    await _waitFor(tester, find.text('المفضلات'));
+    expect(find.text('الرجوع'), findsNothing, reason: 'Home is the only route left');
+    expect(tester.takeException(), isNull);
     handle.dispose();
   });
 }

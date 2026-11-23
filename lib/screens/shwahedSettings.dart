@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:tayseer_insight/widgets/app_scaffold.dart';
 import 'package:tayseer_insight/app/theme.dart';
+import 'package:tayseer_insight/services/settings_store.dart';
 
 import 'dart:convert';
 import 'package:flutter/services.dart' show rootBundle;
@@ -34,16 +35,7 @@ class ShwahedSettingsState extends State<ShwahedSettings> {
     saveShwahed();
   }
 
-  void saveShwahed() async {
-    SharedPreferences prefs = await SharedPreferences.getInstance();
-    List<String> _myshawahe = [];
-    if (globals.myshawahed != null) {
-      for (var i = 0; i < globals.myshawahed.length; i++) {
-        _myshawahe.add(jsonEncode(globals.myshawahed[i]));
-      }
-    }
-    prefs.setStringList('shawahed_setting', _myshawahe);
-  }
+  void saveShwahed() => SettingsStore.saveShwahed(globals.myshawahed);
 
   @override
   Widget build(BuildContext context) {

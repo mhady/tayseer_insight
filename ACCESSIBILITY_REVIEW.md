@@ -1,6 +1,6 @@
 # Tayseer Insight (تيسير القراءات للمكفوفين) — Code & Accessibility Review
 
-> **Progress:** Phase 0 and Phase 1 are done (see §7). Findings A1, A8 and parts of B1, B2, B7 are resolved by them; the rest are still open for Phase 2+.
+> **Progress:** Phases 0, 1 and 2 are done (see §7 and §8). Resolved: A1–A8, B1–B3, B5, B6, and bugs 1–6 in §3. Still open: the rest of B4, B7, C, bug 10 (local audio permissions) and the Phase 3 audio service.
 
 Scope: `tayseer_insight/lib` (v1.0.8+14), Android manifest, pubspec, tests. The `old/` folders are earlier copies and were not reviewed.
 Method: static read of every screen plus the audio player. **Nothing was run on a device, and no TalkBack test was done.** Items marked *(verify)* are inferred from the code and need a device check.
@@ -215,3 +215,43 @@ Add `meetsGuideline(androidTapTargetGuideline)`, `labeledTapTargetGuideline`, `t
 **Deliberately NOT changed yet (Phase 2+):** all logic bugs in §3 (shawahed/tafseer persistence, boundary crashes, `getNext` off-by-one, network errors, Extras race), the audio player internals (A6/A7), the aya-number dialog (A4), the ayah-change announcements (A2/A3) and the `pushNamed('Home')` stack growth (B5).
 
 **Not verified:** nothing was run on a device or with TalkBack. `flutter analyze lib` reports 0 errors / 0 warnings (about 400 pre-existing style infos remain, mostly `package:flutter/material.dart` deprecation notices on this very new Flutter toolchain). `flutter test`: 10/10 pass, including 1×–3× text scale with no overflow and the Android tap-target / labeled-target guidelines.
+
+
+---
+
+## 8. Phase 2 — what changed
+
+**Settings that now persist (§3 bugs 1–2)**
+- `services/settings_store.dart` restores the reader, the tafseer choice (never saved before) and the shawahed choices (saved but never loaded: the check ran before the async read finished). Reads the old storage format, ignores corrupt entries.
+
+**Audio player (A6, A7, §3 bug 5)** — `audioPlayerQuraat.dart` rewritten around one lifecycle:
+- `dispose()` is called by every screen that owns a player; the progress listener is cancelled and the native player closed on every play/stop (listeners used to pile up; audio kept playing after leaving a screen).
+- Failure to start (no network, plugin error) is caught, reported once (`onError` → announced + SnackBar) and no longer crashes on `d!`.
+- Pause/resume/finish state is consistent (after pause → resume → finish, Play used to call `resume` on a finished track).
+- Slider: named "موضع التشغيل", value spoken as time ("الموضع 1 دقيقة و5 ثانية من …"), visible track colours, disabled until the length is known, clamped so position > length cannot assert, follows the drag. ±10 s buttons appear for long recordings (khedma/khatma) only.
+- Labels: "إيقاف مؤقت" (hamza fixed) and "إيقاف تام" so pause/stop no longer sound alike.
+
+**Ayah navigation (A2, A3, B3, §3 bug 6)** — `screens/subpage.dart`
+- Next/Previous at the ends announce "هذه آخر / أول آية في السورة" instead of throwing. Rapid taps are queued (newest wins), so data never mixes between ayat.
+- Subtitle is now "سورة X، الآية N من M", a live region (switched off during continuous listening so speech does not talk over the recitation). Extras available for the new ayah are announced.
+- "استماع متواصل" is a real on/off toggle ("إيقاف الاستماع المتواصل"); at the end of the sura it turns itself off and announces. The next ayah's URL is set *before* playing (it used to race).
+- The large JSON files (tafseer ≈ 4.5 MB, intros, shawahed, e3rab) are cached instead of re-parsed on every navigation; dead code and leaked controllers removed.
+- **Extra bug found and fixed:** "تقدمة / التيسير المعلم / كيفية الجمع" opened the recording for the ayah the screen was *first* opened with, not the current one.
+- `services/audio_url.dart`: the duplicated Android/iOS URL logic as one tested function; an unknown reader folder falls back instead of throwing.
+
+**Ayah-number dialog (A4)** — proper label with the valid range ("من 1 إلى 286"), Arabic-Indic digits accepted, non-digits filtered, empty / 0 / too-large input gives an inline (spoken) error instead of crashing.
+
+**Network screens (A5, B5, B6, §3 bugs 3–4)** — Khadamat and Khatamat rewritten on `services/remote_json.dart` (timeout, HTTP status check, one error type), shared `ChoiceList` and `TrackPlayerPanel`:
+- Offline/slow → "تعذر التحميل…" with an "إعادة المحاولة" button (live region), no more endless loading. Home and the sura/ayah screens also show an error + retry.
+- Opening from an ayah no longer races the service list; if no recording exists it says so and shows the list.
+- Next/Previous at the ends announce instead of throwing (off-by-one fixed). Track title is a live region; reader/reviewer are shown on the player screen (they were never visible).
+- System back and the on-screen back button behave the same, level by level; audio stops when the screen goes away.
+- "الرئيسية" now clears the history (`pushNamedAndRemoveUntil`) instead of stacking another Home.
+
+**Tests:** 45 (`logic_test.dart`, `phase2_widget_test.dart`, `widget_test.dart`), including end-to-end flows through the real Home → sura list → ayah dialog → player screen.
+
+**Still not done / not verified**
+- Nothing was run on a device or with TalkBack/VoiceOver; the real `flutter_sound` playback, pause/resume/seek and the lock-screen behaviour are untested. The player keeps the original "new native player per play" approach on purpose; replacing the engine is Phase 3.
+- B4 remainder: overwrite confirmation for favourites, feedback when tapping an empty favourite slot, and announcing a reader/tafseer selection.
+- B7/C: no in-app font-size or high-contrast setting yet; "محليآ" typo; bug 10 (storage permission for downloaded audio on Android 11+).
+- `tafseer_settings` / `qare2Settings` still `pop()` immediately after choosing.

@@ -2,6 +2,7 @@ import 'package:tayseer_insight/utils/log.dart';
 import 'package:flutter/material.dart';
 import 'package:tayseer_insight/widgets/app_scaffold.dart';
 import 'package:tayseer_insight/app/theme.dart';
+import 'package:tayseer_insight/services/settings_store.dart';
 
 import 'dart:convert';
 import 'package:flutter/services.dart' show rootBundle;
@@ -113,10 +114,7 @@ class Qare2SettingsState extends State<Qare2Settings> {
   }
 
 /////////////////////SAVE CHOOSEN QARE2 IN SHARED PREFRENCES////////////////////
-  saveQare2() async {
-    SharedPreferences prefs = await SharedPreferences.getInstance();
-    prefs.setString('Qare2', globals.qre2Folder);
-  }
+  saveQare2() => SettingsStore.saveReader(globals.qre2Folder);
 
 /////////////////////GET CHOOSEN QARE2 IN SHARED PREFRENCES////////////////////
   getQare2() async {

@@ -1,15 +1,20 @@
-import 'package:tayseer_insight/utils/log.dart';
-import 'package:flutter/material.dart';
-import 'package:tayseer_insight/app/theme.dart';
-import 'package:tayseer_insight/widgets/TyseerButton.dart';
-import 'package:tayseer_insight/widgets/app_scaffold.dart';
-import 'package:tayseer_insight/widgets/loading_view.dart';
-import 'package:flutter/services.dart';
-import 'package:tayseer_insight/globals.dart';
-import 'subpage.dart';
 import 'dart:convert';
 
+import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
+import 'package:tayseer_insight/app/theme.dart';
+import 'package:tayseer_insight/globals.dart';
+import 'package:tayseer_insight/utils/aya_utils.dart';
+import 'package:tayseer_insight/utils/log.dart';
+import 'package:tayseer_insight/utils/nav.dart';
+import 'package:tayseer_insight/widgets/TyseerButton.dart';
+import 'package:tayseer_insight/widgets/app_button.dart';
+import 'package:tayseer_insight/widgets/app_scaffold.dart';
+import 'package:tayseer_insight/widgets/loading_view.dart';
+
 class SuraPage extends StatefulWidget {
+  const SuraPage({super.key});
+
   @override
   State<StatefulWidget> createState() => SuraPageState();
 }
@@ -20,163 +25,79 @@ class RequiredSura {
 }
 
 class SuraPageState extends State<SuraPage> {
-  RequiredSura? requiredSura;
-  int currentSura = 0;
   List<Map>? _mySura;
+  List<Map>? _suraData;
   List<dynamic>? title;
   int gridLength = 0;
-  double childRatioLength = 0;
+  bool _failed = false;
+
   @override
   void initState() {
-    //super.initState();
-    //_loadIntroData();
-    WidgetsBinding.instance?.addPostFrameCallback((_) async {
-      await _loadIntroData();
-      setState(() {});
-    });
-
-    //  _loadIntroData(); //.then((value) => super.initState());
+    super.initState();
+    WidgetsBinding.instance.addPostFrameCallback((_) => _loadIntroData());
   }
 
-  Future _loadIntroData() async {
-    await currentSura;
-    String jsonSura =
-        await rootBundle.loadString("assets/data/sura_jsons/$currentSura.json");
-    //  setState(() {
-    _mySura = List<Map>.from(jsonDecode(jsonSura) as List);
-    log("*******_mySura: $_mySura");
-    title = _mySura!.map((t) => t["page_title"]).toList();
-    log(title![0]);
-    if (_mySura!.length == 9 || _mySura!.length == 12) {
-      gridLength = 3;
-      childRatioLength = 1.1;
-    } else {
-      gridLength = 2;
-      childRatioLength = 2.0;
+  Future<void> _loadIntroData() async {
+    try {
+      final id = (ModalRoute.of(context)!.settings.arguments as RequiredSura).id!;
+      final jsonSura = await rootBundle.loadString('assets/data/sura_jsons/$id.json');
+      final jsonData = await rootBundle.loadString('assets/data/sura_data.json');
+      final list = List<Map>.from(jsonDecode(jsonSura) as List);
+      final data = List<Map>.from(jsonDecode(jsonData) as List);
+      if (!mounted) return;
+      setState(() {
+        _mySura = list;
+        _suraData = data;
+        title = list.map((t) => t['page_title']).toList();
+        // Groups with 9 or 12 suras fit three per row; the rest two.
+        gridLength = (list.length == 9 || list.length == 12) ? 3 : 2;
+        _failed = false;
+      });
+    } catch (e, st) {
+      log('sura list failed: $e\n$st');
+      if (mounted) setState(() => _failed = true);
     }
-    //   });
   }
 
-  TextEditingController subpagetitle = new TextEditingController();
-  TextEditingController suraName = new TextEditingController();
-  String format(String ayaAndSoraNumber) {
-    int n = int.parse(ayaAndSoraNumber);
-    String r = '';
-    if (n <= 9)
-      r = "00" + n.toString();
-    else if (n > 9 && n <= 99)
-      r = "0" + n.toString();
-    else if (n > 99) r = n.toString();
-    return r;
+  /// Number of ayat in the sura whose id is e.g. "002".
+  int? _ayatOf(String suraId) {
+    final order = int.tryParse(suraId);
+    final item = _suraData?.where((e) => e['sura_order'] == order).firstOrNull;
+    final ayat = item?['ayat'];
+    return ayat is int ? ayat : null;
   }
 
-  void soraNumber(String value) {
-    log(this.format(ayaNumber.text));
-    String rr = this.format(ayaNumber.text);
-    AyaSoraNumber as = new AyaSoraNumber(aya: rr, sora: value);
-    Navigator.pushNamed(context, 'subPage', arguments: as);
-  }
-
-  TextEditingController ayaNumber = TextEditingController();
-  void showMyDialog(String value) {
-    showDialog<bool>(
-        context: context,
-        barrierDismissible: false,
-        builder: (BuildContext context) {
-          return AlertDialog(
-//////////////////POPUP CONTAINER TEXT FIELD ///////////////
-            content: SingleChildScrollView(
-              // height: MediaQuery.of(context).size.height/2,
-              child: Container(
-                child: Wrap(
-                  spacing: 10.0, // gap between adjacent chips
-                  runSpacing: 4.0, // gap between lines
-                  children: <Widget>[
-                    Column(
-                      mainAxisSize: MainAxisSize.min,
-                      children: <Widget>[
-                        Container(
-                          child: Directionality(
-                            textDirection: TextDirection.rtl,
-                            child: TextFormField(
-                              decoration: InputDecoration(
-                                counterText: 'من فضلك ادخل رقم الآية',
-                                counterStyle: TextStyle(
-                                    fontWeight: FontWeight.bold,
-                                    fontSize: 25.0,
-                                    color: Color(0xff22160B)),
-                              ),
-                              controller: ayaNumber,
-                              autofocus: true,
-                              textDirection: TextDirection.rtl,
-                              keyboardType: TextInputType.number,
-                              maxLength: 3,
-                            ),
-                          ),
-                        ),
-                      ],
-                    ),
-                  ],
-                ),
-              ),
-            ),
-            actions: <Widget>[
-//////////////////POPUP BUTTONS ///////////////
-              new ButtonTheme(
-                height: 50.0,
-                minWidth: MediaQuery.of(context).size.width / 3,
-                child: ElevatedButton(
-                  onPressed: () {
-                    Navigator.of(context).pop();
-                  },
-                  child: Text(
-                    "الغاء",
-                    style: TextStyle(fontSize: 21.0),
-                  ),
-                        style: OutlinedButton.styleFrom( 
-                    
-                    foregroundColor : Colors.brown[100], // Text Color
-                   backgroundColor: Color(0xff22160B), 
-                    //splashColor: Colors.grey,
-                  ),
-                ),
-              ),
-              new ButtonTheme(
-                height: 50.0,
-                minWidth: MediaQuery.of(context).size.width / 3,
-                child: ElevatedButton(
-                  onPressed: () {
-                    Navigator.of(context).pop();
-                    soraNumber(value);
-                    ayaNumber.clear();
-                    log(value);
-                  },
-                  child: Text(
-                    "ذهاب",
-                    style: TextStyle(fontSize: 21.0),
-                  ),
-                         style: OutlinedButton.styleFrom( 
-                     
-                    foregroundColor : Colors.brown[100], // Text Color
-                   backgroundColor: Color(0xff22160B), 
-                    //splashColor: Colors.grey,
-                  ),
-                ),
-              ),
-            ],
-          );
-        });
+  Future<void> _askForAya(String suraId) async {
+    final ayat = _ayatOf(suraId);
+    final aya = await showDialog<int>(
+      context: context,
+      barrierDismissible: false,
+      builder: (context) => _AyaNumberDialog(maxAya: ayat),
+    );
+    if (aya == null || !mounted) return;
+    Navigator.pushNamed(
+      context,
+      'subPage',
+      arguments: AyaSoraNumber(aya: pad3(aya), sora: suraId),
+    );
   }
 
   @override
   Widget build(BuildContext context) {
-    RouteSettings settings = ModalRoute.of(context)!.settings;
-    requiredSura = settings.arguments as RequiredSura?;
-    currentSura = requiredSura!.id!;
-
+    if (_failed) {
+      return AppScaffold(
+        title: 'السور',
+        body: ErrorView(
+          onRetry: () {
+            setState(() => _failed = false);
+            _loadIntroData();
+          },
+        ),
+      );
+    }
     if (title == null || _mySura == null) return const LoadingView();
-    final String pageTitle = title![0];
-    final List<Map> mySuraList = _mySura!;
+    final pageTitle = '${title![0]}';
+    final suras = _mySura!;
     final scale = AppTheme.textScale(context);
 
     return AppScaffold(
@@ -186,29 +107,26 @@ class SuraPageState extends State<SuraPage> {
         final columns = scale > 1.3 ? 1 : gridLength;
         final cellWidth = constraints.maxWidth / columns;
         final lines = scale > 1.3 ? 2 : 1;
-        final cellHeight =
-            MediaQuery.textScalerOf(context).scale(27) * 1.4 * lines + 28;
+        final cellHeight = MediaQuery.textScalerOf(context).scale(27) * 1.4 * lines + 28;
         return GridView.builder(
-          itemCount: mySuraList.length,
+          itemCount: suras.length,
           gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
             crossAxisCount: columns,
             childAspectRatio: cellWidth / (cellHeight < 72 ? 72 : cellHeight),
           ),
-          itemBuilder: (BuildContext context, int index) {
-            return Card(
-              margin: const EdgeInsets.all(4),
-              child: ElevatedButton(
-                autofocus: index == 0,
-                onPressed: () => showMyDialog(mySuraList[index]["sura_id"]),
-                style: AppTheme.buttonStyle(minHeight: 70),
-                child: Text(
-                  mySuraList[index]["sura_name"],
-                  textAlign: TextAlign.center,
-                  style: const TextStyle(fontSize: 27.0),
-                ),
+          itemBuilder: (context, index) => Padding(
+            padding: const EdgeInsets.all(4),
+            child: ElevatedButton(
+              autofocus: index == 0,
+              onPressed: () => _askForAya('${suras[index]['sura_id']}'),
+              style: AppTheme.buttonStyle(minHeight: 70),
+              child: Text(
+                '${suras[index]['sura_name']}',
+                textAlign: TextAlign.center,
+                style: const TextStyle(fontSize: 27.0),
               ),
-            );
-          },
+            ),
+          ),
         );
       }),
       bottomBar: AppBottomBar(
@@ -226,10 +144,95 @@ class SuraPageState extends State<SuraPage> {
           TyseerButton(
             buttonHeight: 70,
             text: 'الرئيسية',
-            onPressed: () => Navigator.pushNamed(context, 'Home'),
+            onPressed: () => goHome(context),
           ),
         ],
       ),
+    );
+  }
+}
+
+/// Asks for an ayah number. Accepts Arabic-Indic digits, shows the valid range
+/// and reports problems as a spoken error instead of crashing.
+class _AyaNumberDialog extends StatefulWidget {
+  const _AyaNumberDialog({required this.maxAya});
+  final int? maxAya;
+
+  @override
+  State<_AyaNumberDialog> createState() => _AyaNumberDialogState();
+}
+
+class _AyaNumberDialogState extends State<_AyaNumberDialog> {
+  final _controller = TextEditingController();
+  String? _error;
+
+  @override
+  void dispose() {
+    _controller.dispose();
+    super.dispose();
+  }
+
+  void _submit() {
+    final value = parseAyaNumber(_controller.text);
+    final max = widget.maxAya;
+    String? error;
+    if (_controller.text.trim().isEmpty) {
+      error = 'من فضلك أدخل رقم الآية';
+    } else if (value == null) {
+      error = 'رقم الآية غير صحيح';
+    } else if (max != null && value > max) {
+      error = 'رقم الآية يجب أن يكون بين 1 و $max';
+    }
+    if (error != null) {
+      setState(() => _error = error);
+      return;
+    }
+    Navigator.of(context).pop(value);
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    final max = widget.maxAya;
+    return AlertDialog(
+      semanticLabel: 'رقم الآية',
+      title: const Text('رقم الآية',
+          textAlign: TextAlign.center, style: TextStyle(fontSize: 26)),
+      content: TextField(
+        controller: _controller,
+        autofocus: true,
+        keyboardType: TextInputType.number,
+        textInputAction: TextInputAction.go,
+        maxLength: 3,
+        inputFormatters: [
+          FilteringTextInputFormatter.allow(RegExp(r'[0-9٠-٩۰-۹]')),
+        ],
+        style: const TextStyle(fontSize: 25),
+        decoration: InputDecoration(
+          labelText: max == null ? 'من فضلك ادخل رقم الآية' : 'رقم الآية (من 1 إلى $max)',
+          labelStyle: const TextStyle(
+              fontWeight: FontWeight.bold, fontSize: 20, color: AppColors.ink),
+          errorText: _error,
+          errorStyle: const TextStyle(fontSize: 18),
+          counterText: '',
+        ),
+        onChanged: (_) {
+          if (_error != null) setState(() => _error = null);
+        },
+        onSubmitted: (_) => _submit(),
+      ),
+      actionsAlignment: MainAxisAlignment.center,
+      actionsOverflowAlignment: OverflowBarAlignment.center,
+      actionsOverflowDirection: VerticalDirection.down,
+      actionsOverflowButtonSpacing: 6,
+      actions: [
+        AppButton(label: 'ذهاب', fontSize: 21, minHeight: 56, onPressed: _submit),
+        AppButton(
+          label: 'الغاء',
+          fontSize: 21,
+          minHeight: 56,
+          onPressed: () => Navigator.of(context).pop(),
+        ),
+      ],
     );
   }
 }
